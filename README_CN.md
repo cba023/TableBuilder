@@ -4,39 +4,35 @@
 [![License](https://img.shields.io/cocoapods/l/TableBuilder.svg?style=flat)](https://cocoapods.org/pods/TableBuilder)
 [![Platform](https://img.shields.io/cocoapods/p/TableBuilder.svg?style=flat)](https://cocoapods.org/pods/TableBuilder)
 
+更方便快捷构建TableView页面
 
-[-> 中文说明](https://github.com/cba023/TableBuilder/blob/main/README_CN.md)
+优点:
 
-Easier to write TableView page
+* 更少代码
+* 声明式
+* 灵活度高
+* 基于 UITableViewDelegate & UITableViewDataSource
+* 已经处理好Cell复用
+* 方便重写和扩展
 
-Advantages:
+## 示例
 
-* Less code
-* Declarative
-* Flexible
-* Base on UITableViewDelegate & UITableViewDataSource
-* Already handled the reuse function
-* Easy to rewrite and extend
+要运行示例项目，请克隆仓库，并首先从示例目录运行`pod install`。
 
-
-## Example
-
-To run the example project, clone the repo, and run `pod install` from the Example directory first.
-
-## Requirements
+## 要求
 
 > Swift 5+
 
-## Installation
+## 安装
 
-TableBuilder is available through [CocoaPods](https://cocoapods.org). To install
-it, simply add the following line to your Podfile:
+TableBuilder可以通过[CocoaPods](https://cocoapods.org)获得。安装
+只需将下面这行添加到你的Podfile中:
 
 ```ruby
 pod 'TableBuilder'
 ```
 
-## Usage 
+## 使用
 
 ```swift
 import TableBuilder
@@ -55,12 +51,12 @@ class ViewController: UIViewController {
     var show: Bool = true
     
     func reloadTable() {
-        // bind the builder
+        // 绑定构造器
         tableProxy = tableView.bd.build(TableBuilder {
             for _ in 0..<3 {
-                // create a TableViewSection
+                // 创建TableViewSection
                 TableSectionBuilder {
-                    // create a TableViewRow
+                    // 创建TableViewRow
                     TableRowBuilder(
                         cellHeight: 50,
                         cellType: TableViewCell1.self, reuseType: .nib)
@@ -86,6 +82,7 @@ class ViewController: UIViewController {
                             cellType: UITableViewCell.self,
                             reuseType: .anyClass)
                         { tableView, indexPath, cell in
+                        // cell定制
                             cell.contentView.backgroundColor = .blue
                             cell.textLabel?.text = "\(indexPath.row)"
                         }
@@ -118,6 +115,7 @@ class ViewController: UIViewController {
                 }
             }
         })
+        /// 全局选中
         tableProxy.didSelectRowAtIndexPath = { tableView, indexPath in
             print("clicked: \(indexPath.section) - \(indexPath.row)")
         }
@@ -130,10 +128,10 @@ class ViewController: UIViewController {
 ```
 
 
-## Author
+## 作者
 
-chenbo, cba023@hotmail.com
+陈波, cba023@hotmail.com
 
-## License
+## 开源许可
 
-TableBuilder is available under the MIT license. See the LICENSE file for more info.
+TableBuilder在MIT许可下可用。查看许可证文件以获取更多信息。

@@ -1,0 +1,16 @@
+PODS:
+  - TableBuilder (0.1.0)
+
+DEPENDENCIES:
+  - TableBuilder (from `../`)
+
+EXTERNAL SOURCES:
+  TableBuilder:
+    :path: "../"
+
+SPEC CHECKSUMS:
+  TableBuilder: 3e0227435badcd32ac017c296482940c4f3c4e17
+
+PODFILE CHECKSUM: 40269abc1a9c26087945f5b1b7048d4a69cf8506
+
+COCOAPODS: 1.12.1

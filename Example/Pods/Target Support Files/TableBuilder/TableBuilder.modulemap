@@ -1,0 +1,6 @@
+framework module TableBuilder {
+  umbrella header "TableBuilder-umbrella.h"
+
+  export *
+  module * { export * }
+}
