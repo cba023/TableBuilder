@@ -9,7 +9,7 @@ import UIKit
 
 open class TableProxy: NSObject {
     
-    open var builder: TableBuilder!
+    open var builder: TableBuilder?
     
     open var didSelectRowAtIndexPath: ((_ tableView: UITableView, _ indexPath: IndexPath) -> ())?
     
@@ -50,56 +50,56 @@ open class TableProxy: NSObject {
 extension TableProxy: UITableViewDataSource, UITableViewDelegate {
     
     open func numberOfSections(in tableView: UITableView) -> Int {
-        return builder.sections.count
+        return builder?.sections.count ?? 0
     }
     
     open func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return builder.sections[section].rows.count
+        return builder?.sections[section].rows.count ?? 0
     }
     
     open func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return builder.sections[section].headerHeight
+        return builder?.sections[section].headerHeight ?? 0
     }
     
     open func tableView(_ tableView: UITableView, estimatedHeightForHeaderInSection section: Int) -> CGFloat {
-        return builder.sections[section].headerHeight
+        return builder?.sections[section].headerHeight ?? 0
     }
     
     open func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        return builder.sections[section].footerHeight
+        return builder?.sections[section].footerHeight ?? 0
     }
     
     open func tableView(_ tableView: UITableView, estimatedHeightForFooterInSection section: Int) -> CGFloat {
-        return builder.sections[section].headerHeight
+        return builder?.sections[section].headerHeight ?? 0
     }
     
     open func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return builder.sections[indexPath.section].rows[indexPath.row].cellHeight
+        return builder?.sections[indexPath.section].rows[indexPath.row].cellHeight ?? 0
     }
     
     open func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
-        return builder.sections[indexPath.section].rows[indexPath.row].cellHeight
+        return builder?.sections[indexPath.section].rows[indexPath.row].cellHeight ?? 0
     }
     
     open func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let sectionBuilder = builder.sections[section]
+        let sectionBuilder = builder!.sections[section]
         return sectionBuilder.viewForHeader?(tableView, section)
     }
     
     open func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-        let sectionBuilder = builder.sections[section]
+        let sectionBuilder = builder!.sections[section]
         return sectionBuilder.viewForFooter?(tableView, section)
     }
     
     open func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let sectionBuilder = builder.sections[indexPath.section]
+        let sectionBuilder = builder!.sections[indexPath.section]
         let rowBuilder = sectionBuilder.rows[indexPath.row]
         return rowBuilder.cellForRowAtIndexPath(tableView, indexPath)
     }
     
     open func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         didSelectRowAtIndexPath?(tableView, indexPath)
-        let sectionBuilder = builder.sections[indexPath.section]
+        let sectionBuilder = builder!.sections[indexPath.section]
         let rowBuilder = sectionBuilder.rows[indexPath.row]
         rowBuilder.didSelectRowAtIndexPath(tableView, indexPath)
     }
