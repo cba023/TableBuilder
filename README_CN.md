@@ -51,13 +51,11 @@ class ViewController: UIViewController {
     var show: Bool = true
     
     func reloadTable() {
-        // 绑定构造器
-        tableProxy = tableView.bd.build(TableBuilder {
+        tableProxy = TableProxy(tableView)
+        tableProxy.builder = TableBuilder {
             for _ in 0..<3 {
-                // 创建TableViewSection
-                TableSectionBuilder {
-                    // 创建TableViewRow
-                    TableRowBuilder(
+                TableBuilder.Section {
+                    TableBuilder.Row(
                         cellHeight: 50,
                         cellType: TableViewCell1.self, reuseType: .nib)
                     { tableView, indexPath, cell in
@@ -65,7 +63,7 @@ class ViewController: UIViewController {
                     } didSelectRowAtIndexPath: { tableView, indexPath, cell in
                         print("CellType1的单独的点击事件")
                     }
-                    TableRowBuilder(
+                    TableBuilder.Row(
                         cellHeight: 50,
                         cellType: TableViewCell2.self, reuseType: .anyClass)
                     { tableView, indexPath, cell in
@@ -76,26 +74,25 @@ class ViewController: UIViewController {
                     }
                     let count = 10
                     for _ in 0..<count {
-                        TableRowBuilder(
+                        TableBuilder.Row(
                             cellHeight: 30,
                             autoCellHeight: false,
                             cellType: UITableViewCell.self,
                             reuseType: .anyClass)
                         { tableView, indexPath, cell in
-                        // cell定制
                             cell.contentView.backgroundColor = .blue
                             cell.textLabel?.text = "\(indexPath.row)"
                         }
                     }
                     if show {
-                        TableRowBuilder(
+                        TableBuilder.Row(
                             cellHeight: 50,
                             cellType: UITableViewCell.self)
                         { tableView, indexPath, cell in
                             cell.contentView.backgroundColor = .purple
                             cell.textLabel?.text = "\(indexPath.row)"
                         }
-                        TableRowBuilder(
+                        TableBuilder.Row(
                             cellHeight: 50,
                             cellType: UITableViewCell.self)
                         { tableView, indexPath, cell in
@@ -104,7 +101,7 @@ class ViewController: UIViewController {
                         }
                     }
                     else {
-                        TableRowBuilder(
+                        TableBuilder.Row(
                             cellHeight: 90,
                             cellType: UITableViewCell.self)
                         { tableView, indexPath, cell in
@@ -114,8 +111,8 @@ class ViewController: UIViewController {
                     }
                 }
             }
-        })
-        /// 全局选中
+        }
+        
         tableProxy.didSelectRowAtIndexPath = { tableView, indexPath in
             print("clicked: \(indexPath.section) - \(indexPath.row)")
         }

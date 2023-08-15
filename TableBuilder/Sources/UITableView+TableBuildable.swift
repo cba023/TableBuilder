@@ -68,12 +68,3 @@ extension TableBuildableWrapper where Base: UITableView {
     }
     
 }
-
-extension TableBuildableWrapper where Base: UITableView {
-    
-    public func build(_ builder: TableBuilder) -> TableProxy {
-        let agent = TableProxy(tableView: base, builder: builder)
-        return agent
-    }
-    
-}

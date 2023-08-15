@@ -9,25 +9,37 @@ import UIKit
 
 open class TableProxy: NSObject {
     
-    open var builder: TableBuilder
+    open var builder: TableBuilder!
     
-    open var didSelectRowAtIndexPath: ((_ tableView: UITableView, _ indexPath: IndexPath) -> Void)?
+    open var didSelectRowAtIndexPath: ((_ tableView: UITableView, _ indexPath: IndexPath) -> ())?
     
-    open var didScroll: ((_ scrollView: UIScrollView) -> Void)?
+    open var didScroll: ((_ scrollView: UIScrollView) -> ())?
     
-    open var willBeginDragging: ((_ scrollView: UIScrollView) -> Void)?
+    open var willBeginDragging: ((_ scrollView: UIScrollView) -> ())?
     
-    open var didEndDragging: ((_ scrollView: UIScrollView, _ willDecelerate: Bool) -> Void)?
+    open var didEndDragging: ((_ scrollView: UIScrollView, _ willDecelerate: Bool) -> ())?
     
-    open var willBeginDecelerating: ((_ scrollView: UIScrollView) -> Void)?
+    open var willBeginDecelerating: ((_ scrollView: UIScrollView) -> ())?
     
-    open var didEndDecelerating: ((_ scrollView: UIScrollView) -> Void)?
+    open var didEndDecelerating: ((_ scrollView: UIScrollView) -> ())?
     
-    open var didEndScrollingAnimation: ((_ scrollView: UIScrollView) -> Void)?
-
+    open var didEndScrollingAnimation: ((_ scrollView: UIScrollView) -> ())?
     
-    public init(tableView: UITableView, builder: TableBuilder) {
-        self.builder = builder
+    open var canEditRow: ((_ tableView: UITableView, _ indexPath: IndexPath) -> Bool)?
+    
+    open var commitEdit: ((_ tableView: UITableView, _ editingStyle: UITableViewCell.EditingStyle, _ indexPath: IndexPath) -> ())?
+    
+    open var willBeginEditing: ((_ tableView: UITableView, _ indexPath: IndexPath) -> ())?
+    
+    open var didEndEditing: ((_ tableView: UITableView, _ indexPath: IndexPath?) -> ())?
+    
+    open var editStyle: ((_ tableView: UITableView, _ indexPath: IndexPath) -> UITableViewCell.EditingStyle)?
+    
+    open var titleForDeleteConfirmationButton: ((_ tableView: UITableView, _ indexPath: IndexPath?) -> String?)?
+    
+    open var shouldIndentWhileEditing: ((_ tableView: UITableView, _ indexPath: IndexPath?) -> Bool)?
+    
+    public init(_ tableView: UITableView) {
         super.init()
         tableView.dataSource = self
         tableView.delegate = self
@@ -70,26 +82,54 @@ extension TableProxy: UITableViewDataSource, UITableViewDelegate {
     }
     
     open func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let sectionBuilder = self.builder.sections[section]
+        let sectionBuilder = builder.sections[section]
         return sectionBuilder.viewForHeader?(tableView, section)
     }
     
     open func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-        let sectionBuilder = self.builder.sections[section]
+        let sectionBuilder = builder.sections[section]
         return sectionBuilder.viewForFooter?(tableView, section)
     }
     
     open func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let sectionBuilder = self.builder.sections[indexPath.section]
+        let sectionBuilder = builder.sections[indexPath.section]
         let rowBuilder = sectionBuilder.rows[indexPath.row]
         return rowBuilder.cellForRowAtIndexPath(tableView, indexPath)
     }
     
     open func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        self.didSelectRowAtIndexPath?(tableView, indexPath)
-        let sectionBuilder = self.builder.sections[indexPath.section]
+        didSelectRowAtIndexPath?(tableView, indexPath)
+        let sectionBuilder = builder.sections[indexPath.section]
         let rowBuilder = sectionBuilder.rows[indexPath.row]
         rowBuilder.didSelectRowAtIndexPath(tableView, indexPath)
+    }
+    
+    open func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+        return canEditRow?(tableView, indexPath) ?? false
+    }
+
+    open func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        commitEdit?(tableView, editingStyle, indexPath)
+    }
+    
+    open func tableView(_ tableView: UITableView, willBeginEditingRowAt indexPath: IndexPath) {
+        willBeginEditing?(tableView, indexPath)
+    }
+    
+    open func tableView(_ tableView: UITableView, didEndEditingRowAt indexPath: IndexPath?) {
+        didEndEditing?(tableView, indexPath)
+    }
+    
+    open func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
+        return editStyle?(tableView, indexPath) ?? .none
+    }
+    
+    open func tableView(_ tableView: UITableView, titleForDeleteConfirmationButtonForRowAt indexPath: IndexPath) -> String? {
+        return titleForDeleteConfirmationButton?(tableView, indexPath)
+    }
+    
+    open func tableView(_ tableView: UITableView, shouldIndentWhileEditingRowAt indexPath: IndexPath) -> Bool {
+        return shouldIndentWhileEditing?(tableView, indexPath) ?? false
     }
     
 }

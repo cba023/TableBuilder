@@ -59,9 +59,9 @@ class ViewController: UIViewController {
         tableProxy = tableView.bd.build(TableBuilder {
             for _ in 0..<3 {
                 // create a TableViewSection
-                TableSectionBuilder {
+                TableBuilder.Section {
                     // create a TableViewRow
-                    TableRowBuilder(
+                    TableBuilder.Row(
                         cellHeight: 50,
                         cellType: TableViewCell1.self, reuseType: .nib)
                     { tableView, indexPath, cell in
@@ -69,7 +69,7 @@ class ViewController: UIViewController {
                     } didSelectRowAtIndexPath: { tableView, indexPath, cell in
                         print("CellType1的单独的点击事件")
                     }
-                    TableRowBuilder(
+                    TableBuilder.Row(
                         cellHeight: 50,
                         cellType: TableViewCell2.self, reuseType: .anyClass)
                     { tableView, indexPath, cell in
@@ -80,7 +80,7 @@ class ViewController: UIViewController {
                     }
                     let count = 10
                     for _ in 0..<count {
-                        TableRowBuilder(
+                        TableBuilder.Row(
                             cellHeight: 30,
                             autoCellHeight: false,
                             cellType: UITableViewCell.self,
@@ -91,14 +91,14 @@ class ViewController: UIViewController {
                         }
                     }
                     if show {
-                        TableRowBuilder(
+                        TableBuilder.Row(
                             cellHeight: 50,
                             cellType: UITableViewCell.self)
                         { tableView, indexPath, cell in
                             cell.contentView.backgroundColor = .purple
                             cell.textLabel?.text = "\(indexPath.row)"
                         }
-                        TableRowBuilder(
+                        TableBuilder.Row(
                             cellHeight: 50,
                             cellType: UITableViewCell.self)
                         { tableView, indexPath, cell in
@@ -107,7 +107,7 @@ class ViewController: UIViewController {
                         }
                     }
                     else {
-                        TableRowBuilder(
+                        TableBuilder.Row(
                             cellHeight: 90,
                             cellType: UITableViewCell.self)
                         { tableView, indexPath, cell in

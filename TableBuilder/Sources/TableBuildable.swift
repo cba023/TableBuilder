@@ -13,9 +13,9 @@ public protocol TableBuildable {
     
     associatedtype Base
     
-    static var bd: TableBuildableWrapper<Base>.Type { get }
+    static var tb: TableBuildableWrapper<Base>.Type { get }
     
-    var bd: TableBuildableWrapper<Base>  { get }
+    var tb: TableBuildableWrapper<Base>  { get }
     
 }
 
@@ -23,12 +23,12 @@ public protocol TableBuildable {
 public extension TableBuildable {
     
     /// 静态扩展后缀
-    static var bd: TableBuildableWrapper<Self>.Type {
+    static var tb: TableBuildableWrapper<Self>.Type {
         return TableBuildableWrapper<Self>.self
     }
     
     /// 实例扩展后缀
-    var bd: TableBuildableWrapper<Self> {
+    var tb: TableBuildableWrapper<Self> {
         return TableBuildableWrapper(self)
     }
 }

@@ -12,7 +12,7 @@ class ListVC: UIViewController {
     
     @IBOutlet weak var tableView: UITableView!
     
-    var tableAgent: TableProxy!
+    var tableProxy: TableProxy!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -22,10 +22,11 @@ class ListVC: UIViewController {
     var show: Bool = true
     
     func buildTable() {
-        tableAgent = tableView.bd.build(TableBuilder {
+        tableProxy = TableProxy(tableView)
+        tableProxy.builder = TableBuilder {
             for _ in 0..<3 {
-                TableSectionBuilder {
-                    TableRowBuilder(
+                TableBuilder.Section {
+                    TableBuilder.Row(
                         cellHeight: 50,
                         cellType: TableViewCell1.self, reuseType: .nib)
                     { tableView, indexPath, cell in
@@ -33,7 +34,7 @@ class ListVC: UIViewController {
                     } didSelectRowAtIndexPath: { tableView, indexPath, cell in
                         print("CellType1的单独的点击事件")
                     }
-                    TableRowBuilder(
+                    TableBuilder.Row(
                         cellHeight: 50,
                         cellType: TableViewCell2.self, reuseType: .anyClass)
                     { tableView, indexPath, cell in
@@ -44,7 +45,7 @@ class ListVC: UIViewController {
                     }
                     let count = 10
                     for _ in 0..<count {
-                        TableRowBuilder(
+                        TableBuilder.Row(
                             cellHeight: 30,
                             autoCellHeight: false,
                             cellType: UITableViewCell.self,
@@ -55,14 +56,14 @@ class ListVC: UIViewController {
                         }
                     }
                     if show {
-                        TableRowBuilder(
+                        TableBuilder.Row(
                             cellHeight: 50,
                             cellType: UITableViewCell.self)
                         { tableView, indexPath, cell in
                             cell.contentView.backgroundColor = .purple
                             cell.textLabel?.text = "\(indexPath.row)"
                         }
-                        TableRowBuilder(
+                        TableBuilder.Row(
                             cellHeight: 50,
                             cellType: UITableViewCell.self)
                         { tableView, indexPath, cell in
@@ -71,7 +72,7 @@ class ListVC: UIViewController {
                         }
                     }
                     else {
-                        TableRowBuilder(
+                        TableBuilder.Row(
                             cellHeight: 90,
                             cellType: UITableViewCell.self)
                         { tableView, indexPath, cell in
@@ -81,11 +82,12 @@ class ListVC: UIViewController {
                     }
                 }
             }
-        })
+        }
         
-        tableAgent.didSelectRowAtIndexPath = { tableView, indexPath in
+        tableProxy.didSelectRowAtIndexPath = { tableView, indexPath in
             print("clicked: \(indexPath.section) - \(indexPath.row)")
         }
+        tableView.reloadData()
     }
     
 }
