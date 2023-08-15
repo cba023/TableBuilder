@@ -26,7 +26,7 @@ open class TableProxy: NSObject {
     open var didEndScrollingAnimation: ((_ scrollView: UIScrollView) -> Void)?
 
     
-    init(tableView: UITableView, builder: TableBuilder) {
+    public init(tableView: UITableView, builder: TableBuilder) {
         self.builder = builder
         super.init()
         tableView.dataSource = self
