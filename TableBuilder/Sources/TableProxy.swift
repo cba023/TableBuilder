@@ -39,10 +39,30 @@ open class TableProxy: NSObject {
     
     open var shouldIndentWhileEditing: ((_ tableView: UITableView, _ indexPath: IndexPath?) -> Bool)?
     
+    open var tableView: UITableView
+    
     public init(_ tableView: UITableView) {
+        self.tableView = tableView
         super.init()
         tableView.dataSource = self
         tableView.delegate = self
+    }
+    
+    open func rebuild(_ tableBuilder: TableBuilder) {
+        self.builder = tableBuilder
+        self.reloadData()
+    }
+    
+    open func reloadData() {
+        tableView.reloadData()
+    }
+    
+    open func reloadSections(sections: IndexSet, with animation: UITableView.RowAnimation) {
+        tableView.reloadSections(sections, with: animation)
+    }
+    
+    open func reloadRows(at indexPaths: [IndexPath], with animation: UITableView.RowAnimation) {
+        tableView.reloadRows(at: indexPaths, with: animation)
     }
     
 }

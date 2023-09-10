@@ -23,7 +23,7 @@ class ListVC: UIViewController {
     
     func buildTable() {
         tableProxy = TableProxy(tableView)
-        tableProxy.builder = TableBuilder {
+        tableProxy.rebuild(TableBuilder {
             for _ in 0..<3 {
                 TableBuilder.Section {
                     TableBuilder.Row(
@@ -82,7 +82,7 @@ class ListVC: UIViewController {
                     }
                 }
             }
-        }
+        })
         
         tableProxy.didSelectRowAtIndexPath = { tableView, indexPath in
             print("clicked: \(indexPath.section) - \(indexPath.row)")

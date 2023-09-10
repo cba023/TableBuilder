@@ -32,10 +32,10 @@ extension TableBuilder {
         public enum HeaderFooterReuseType<T: UIView, U: UITableViewHeaderFooterView> {
             case nibClass(
                 _ class: T.Type,
-                _ view:((_ tableView: UITableView, _ section: Int, _ reusableHeaderFooterView: T) -> Void))
+                _ view:((_ tableView: UITableView, _ section: Int, _ reusableView: T) -> Void))
             case anyClass(
                 _ class: U.Type,
-                _ view:((_ tableView: UITableView, _ section: Int, _ reusableHeaderFooterView: U) -> Void))
+                _ view:((_ tableView: UITableView, _ section: Int, _ reusableView: U) -> Void))
         }
         
         public var rows: [Row] = []

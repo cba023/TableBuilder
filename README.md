@@ -55,12 +55,10 @@ class ViewController: UIViewController {
     var show: Bool = true
     
     func reloadTable() {
-        // bind the builder
-        tableProxy = tableView.bd.build(TableBuilder {
+        tableProxy = TableProxy(tableView)
+        tableProxy.rebuild(TableBuilder {
             for _ in 0..<3 {
-                // create a TableViewSection
                 TableBuilder.Section {
-                    // create a TableViewRow
                     TableBuilder.Row(
                         cellHeight: 50,
                         cellType: TableViewCell1.self, reuseType: .nib)
@@ -118,15 +116,14 @@ class ViewController: UIViewController {
                 }
             }
         })
+        
         tableProxy.didSelectRowAtIndexPath = { tableView, indexPath in
             print("clicked: \(indexPath.section) - \(indexPath.row)")
         }
         tableView.reloadData()
     }
-    
+ 
 }
-
-
 ```
 
 
