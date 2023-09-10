@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = 'TableBuilder'
-  s.version          = '2.0.0'
+  s.version          = '2.0.1'
   s.pod_target_xcconfig = { 'SWIFT_VERSION' => '5.8' }
   s.summary          = 'Easier to write TableView page.'
   s.homepage         = 'https://github.com/cba023/TableBuilder'

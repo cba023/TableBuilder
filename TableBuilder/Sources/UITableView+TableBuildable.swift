@@ -27,7 +27,7 @@ extension TableBuildableWrapper where Base: UITableView {
     }
     
     /// 复用Cell(nibClass)
-    func dequeueReusableCell<T: UITableViewCell>(nibClass: T.Type, bundle: Bundle = .main) -> T {
+    public func dequeueReusableCell<T: UITableViewCell>(nibClass: T.Type, bundle: Bundle = .main) -> T {
         let className = String(className(nibClass).split(separator: ".").last ?? "")
         let cell = (base.dequeueReusableCell(withIdentifier: className) ??
         bundle.loadNibNamed(className, owner: nil, options: nil)?.first) as! T
@@ -35,7 +35,7 @@ extension TableBuildableWrapper where Base: UITableView {
     }
     
     /// 复用Cell(anyClass)
-    func dequeueReusableCell<T: UITableViewCell>(anyClass: T.Type, bundle: Bundle = .main) -> T {
+    public func dequeueReusableCell<T: UITableViewCell>(anyClass: T.Type, bundle: Bundle = .main) -> T {
         let className = className(anyClass)
         var cell = base.dequeueReusableCell(withIdentifier: className)
         if cell == nil {
@@ -48,7 +48,7 @@ extension TableBuildableWrapper where Base: UITableView {
     }
     
     /// 复用Header或Footer(nibClass)
-    func dequeueReusableHeaderFooterView<T: UIView>(nibClass: T.Type, bundle: Bundle = .main) -> T {
+    public func dequeueReusableHeaderFooterView<T: UIView>(nibClass: T.Type, bundle: Bundle = .main) -> T {
         let className = String(className(nibClass).split(separator: ".").last ?? "")
         let headerFooter = (base.dequeueReusableHeaderFooterView(withIdentifier: className)) ??
         ((bundle.loadNibNamed(className, owner: nil, options: nil)?.first) as! UIView)
@@ -56,7 +56,7 @@ extension TableBuildableWrapper where Base: UITableView {
     }
     
     /// 复用Header或Footer(anyClass)
-    func dequeueReusableHeaderFooterView<T: UITableViewHeaderFooterView>(anyClass: T.Type, bundle: Bundle = .main) -> T {
+    public func dequeueReusableHeaderFooterView<T: UITableViewHeaderFooterView>(anyClass: T.Type, bundle: Bundle = .main) -> T {
         let className = className(anyClass)
         var headerFooter:UIView? = base.dequeueReusableHeaderFooterView(withIdentifier: className)
         if headerFooter == nil {
