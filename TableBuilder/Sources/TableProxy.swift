@@ -126,6 +126,16 @@ extension TableProxy: UITableViewDataSource, UITableViewDelegate {
         rowBuilder.didSelectRowAtIndexPath(tableView, indexPath)
     }
     
+    open func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
+        let sectionBuilder = builder!.sections[section]
+        sectionBuilder.headerWillDisplay?(tableView, view, section)
+    }
+    
+    open func tableView(_ tableView: UITableView, willDisplayFooterView view: UIView, forSection section: Int) {
+        let sectionBuilder = builder!.sections[section]
+        sectionBuilder.footerWillDisplay?(tableView, view, section)
+    }
+    
     open func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         willDisplay?(tableView, cell, indexPath)
         let sectionBuilder = builder!.sections[indexPath.section]

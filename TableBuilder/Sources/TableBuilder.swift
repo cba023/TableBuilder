@@ -29,13 +29,17 @@ extension TableBuilder {
     @resultBuilder
     public struct Section {
         
-        public enum HeaderFooterReuseType<T: UIView, U: UITableViewHeaderFooterView> {
+        public enum HeaderFooterReuseType<N: UIView, C: UITableViewHeaderFooterView> {
             case nibClass(
-                _ class: T.Type,
-                _ view:((_ tableView: UITableView, _ section: Int, _ reusableView: T) -> Void))
+                _ class: N.Type,
+                _ view: (_ tableView: UITableView, _ section: Int, _ reusableView: N) -> Void,
+                _ willDisplay: ((_ tableView: UITableView, _ reusableView: N, _ section: Int) -> Void)? = nil
+            )
             case anyClass(
-                _ class: U.Type,
-                _ view:((_ tableView: UITableView, _ section: Int, _ reusableView: U) -> Void))
+                _ class: C.Type,
+                _ view:(_ tableView: UITableView, _ section: Int, _ reusableView: C) -> Void,
+                _ willDisplay: ((_ tableView: UITableView, _ reusableView: C, _ section: Int) -> Void)? = nil
+            )
         }
         
         public var rows: [Row] = []
@@ -46,19 +50,23 @@ extension TableBuilder {
         
         public var viewForHeader: ((_ tableView: UITableView, _ section: Int) -> UIView?)?
         
+        public var headerWillDisplay: ((_ tableView: UITableView, _ reusableView: UIView, _ section: Int) -> Void)?
+        
+        public var footerWillDisplay: ((_ tableView: UITableView, _ reusableView: UIView, _ section: Int) -> Void)?
+        
         public let autoFooterHeight: Bool
         
         public let footerHeight: CGFloat
         
         public var viewForFooter: ((_ tableView: UITableView, _ section: Int) -> UIView?)?
         
-        public init<T1: UIView, T2: UIView, U1: UITableViewHeaderFooterView, U2: UITableViewHeaderFooterView>(
+        public init<H1: UIView, F1: UIView, H2: UITableViewHeaderFooterView, F2: UITableViewHeaderFooterView>(
             headerHeight: CGFloat = CGFloat.leastNormalMagnitude,
             autoHeaderHeight: Bool = false,
-            headerReuse: HeaderFooterReuseType<T1, U1>? = nil,
+            headerReuse: HeaderFooterReuseType<H1, H2>? = nil,
             footerHeight: CGFloat = CGFloat.leastNormalMagnitude,
             autoFooterHeight: Bool = false,
-            footerReuse: HeaderFooterReuseType<T2, U2>? = nil,
+            footerReuse: HeaderFooterReuseType<F1, F2>? = nil,
             @Section _ rows: () -> [Row])
         {
             self.autoHeaderHeight = autoHeaderHeight
@@ -67,44 +75,54 @@ extension TableBuilder {
             self.footerHeight = self.autoFooterHeight ? UITableView.automaticDimension : footerHeight
             
             switch headerReuse {
-            case let .nibClass(headerType, reuse):
+            case let .nibClass(headerType, reuse, willDisaplay):
                 self.viewForHeader = {tableView, section in
                     let header = tableView.tb.dequeueReusableHeaderFooterView(nibClass: headerType)
                     reuse(tableView, section, header)
                     return header
                 }
-            case let .anyClass(headerType, reuse):
+                self.headerWillDisplay = { tableView, cell, indexPath in
+                    willDisaplay?(tableView, cell as! H1, indexPath)
+                }
+            case let .anyClass(headerType, reuse, willDisplay):
                 self.viewForHeader = {tableView, section in
                     let header = tableView.tb.dequeueReusableHeaderFooterView(anyClass: headerType)
                     reuse(tableView, section, header)
                     return header
+                }
+                self.headerWillDisplay = { tableView, cell, indexPath in
+                    willDisplay?(tableView, cell as! H2, indexPath)
                 }
             case .none:
                 self.viewForHeader = nil
             }
             
             switch footerReuse {
-            case let .nibClass(footerType, reuse):
+            case let .nibClass(footerType, reuse, willDisplay):
                 self.viewForFooter = {tableView, section in
                     let footer = tableView.tb.dequeueReusableHeaderFooterView(nibClass: footerType)
                     reuse(tableView, section, footer)
                     return footer
                 }
-            case let .anyClass(footerType, reuse):
+                self.footerWillDisplay = { tableView, cell, indexPath in
+                    willDisplay?(tableView, cell as! F1, indexPath)
+                }
+            case let .anyClass(footerType, reuse, willDisplay):
                 self.viewForFooter = {tableView, section in
                     let footer = tableView.tb.dequeueReusableHeaderFooterView(anyClass: footerType)
                     reuse(tableView, section, footer)
                     return footer
                 }
+                self.footerWillDisplay = { tableView, cell, indexPath in
+                    willDisplay?(tableView, cell as! F2, indexPath)
+                }
             case .none:
                 self.viewForFooter = nil
-                
+                self.footerWillDisplay = nil
             }
             self.rows = rows()
         }
-        
     }
-    
 }
 
 extension TableBuilder.Section: ResultBuilderRule {

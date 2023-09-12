@@ -25,7 +25,13 @@ class ListVC: UIViewController {
         tableProxy = TableProxy(tableView)
         tableProxy.rebuild(TableBuilder {
             for _ in 0..<3 {
-                TableBuilder.Section {
+                TableBuilder.Section(headerHeight: 50, headerReuse: .anyClass(UITableViewHeaderFooterView.self,{ tableView, section, reusableView in
+                    reusableView.contentView.backgroundColor = .red
+                }, { tableView, reusableView, indexPath in
+                    /// headerWillDisplay
+                    reusableView.layoutIfNeeded()
+                    reusableView.contentView.cutRectCorner([.topRight, .bottomLeft], cornerRadius: 25)
+                })) {
                     TableBuilder.Row(
                         cellHeight: 50,
                         cellType: TableViewCell1.self, reuseType: .nib)
