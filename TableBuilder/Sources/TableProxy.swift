@@ -13,6 +13,8 @@ open class TableProxy: NSObject {
     
     open var didSelectRowAtIndexPath: ((_ tableView: UITableView, _ indexPath: IndexPath) -> ())?
     
+    open var willDisplay: ((_ tableView: UITableView, _ cell: UITableViewCell, _ indexPath: IndexPath) -> ())?
+    
     open var didScroll: ((_ scrollView: UIScrollView) -> ())?
     
     open var willBeginDragging: ((_ scrollView: UIScrollView) -> ())?
@@ -122,6 +124,13 @@ extension TableProxy: UITableViewDataSource, UITableViewDelegate {
         let sectionBuilder = builder!.sections[indexPath.section]
         let rowBuilder = sectionBuilder.rows[indexPath.row]
         rowBuilder.didSelectRowAtIndexPath(tableView, indexPath)
+    }
+    
+    open func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        willDisplay?(tableView, cell, indexPath)
+        let sectionBuilder = builder!.sections[indexPath.section]
+        let rowBuilder = sectionBuilder.rows[indexPath.row]
+        rowBuilder.willDisplay(tableView, cell, indexPath)
     }
     
     open func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {

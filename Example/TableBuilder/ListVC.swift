@@ -42,6 +42,8 @@ class ListVC: UIViewController {
                         cell.textLabel?.text = "\(indexPath.row)"
                     } didSelectRowAtIndexPath: { tableView, indexPath, cell in
                         print("=====Cell类型2的单独的点击事件")
+                    } willDisplay: { tableView, cell, indexPath in
+                        cell.contentView.cutRectCorner([.topLeft, .bottomRight], cornerRadius: 25)
                     }
                     let count = 10
                     for _ in 0..<count {
@@ -91,3 +93,22 @@ class ListVC: UIViewController {
     }
     
 }
+
+public extension  UIView {
+    
+    /// UIView切部分圆角
+    func cutRectCorner(_ rectCorner: UIRectCorner, cornerRadius: CGFloat) {
+        let base = self
+        let maskPath = UIBezierPath(
+            roundedRect: base.bounds,
+            byRoundingCorners: rectCorner,
+            cornerRadii: CGSize(width: cornerRadius, height: cornerRadius)
+        )
+        let maskLayer = CAShapeLayer.init()
+        maskLayer.frame = base.bounds
+        maskLayer.path = maskPath.cgPath
+        base.layer.mask = maskLayer
+    }
+    
+}
+

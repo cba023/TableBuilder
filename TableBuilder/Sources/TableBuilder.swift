@@ -130,13 +130,17 @@ extension TableBuilder {
         
         let cellForRowAtIndexPath: (_ tableView: UITableView, _ indexPath: IndexPath) -> UITableViewCell
         
+        let willDisplay: (_ tableView: UITableView, _ cell: UITableViewCell, _ indexPath: IndexPath) -> Void
+        
         public init<T: UITableViewCell>(
             cellHeight: CGFloat,
             autoCellHeight: Bool = false,
             cellType: T.Type,
             reuseType: RegisterType = .anyClass,
             _ cellForRowAtIndexPath:@escaping (_ tableView: UITableView, _ indexPath:IndexPath, _ cell: T) -> Void,
-            didSelectRowAtIndexPath: ((_ tableView: UITableView, _ indexPath:IndexPath, _ cell: T) -> Void)? = nil)
+            didSelectRowAtIndexPath: ((_ tableView: UITableView, _ indexPath:IndexPath, _ cell: T) -> Void)? = nil,
+            willDisplay:((_ tableView: UITableView, _ cell: T, _ indexPath: IndexPath) -> Void)? = nil
+        )
         {
             self.autoCellHeight = autoCellHeight
             self.cellHeight = self.autoCellHeight == true ? UITableView.automaticDimension: cellHeight;
@@ -150,6 +154,10 @@ extension TableBuilder {
             self.didSelectRowAtIndexPath = {tableView, indexPath in
                 guard let cell = tableView.cellForRow(at: indexPath) as? T else { return }
                 didSelectRowAtIndexPath?(tableView, indexPath, cell)
+            }
+            self.willDisplay = { tableView, cell, indexPath in
+                guard let cell = cell as? T else { return }
+                willDisplay?(tableView, cell , indexPath)
             }
         }
         
