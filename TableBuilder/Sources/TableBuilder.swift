@@ -76,7 +76,7 @@ extension TableBuilder {
             
             switch headerReuse {
             case let .nibClass(headerType, reuse, willDisaplay):
-                self.viewForHeader = {tableView, section in
+                self.viewForHeader = { tableView, section in
                     let header = tableView.tb.dequeueReusableHeaderFooterView(nibClass: headerType)
                     reuse(tableView, section, header)
                     return header
@@ -85,7 +85,7 @@ extension TableBuilder {
                     willDisaplay?(tableView, cell as! H1, indexPath)
                 }
             case let .anyClass(headerType, reuse, willDisplay):
-                self.viewForHeader = {tableView, section in
+                self.viewForHeader = { tableView, section in
                     let header = tableView.tb.dequeueReusableHeaderFooterView(anyClass: headerType)
                     reuse(tableView, section, header)
                     return header
@@ -99,7 +99,7 @@ extension TableBuilder {
             
             switch footerReuse {
             case let .nibClass(footerType, reuse, willDisplay):
-                self.viewForFooter = {tableView, section in
+                self.viewForFooter = { tableView, section in
                     let footer = tableView.tb.dequeueReusableHeaderFooterView(nibClass: footerType)
                     reuse(tableView, section, footer)
                     return footer
@@ -108,7 +108,7 @@ extension TableBuilder {
                     willDisplay?(tableView, cell as! F1, indexPath)
                 }
             case let .anyClass(footerType, reuse, willDisplay):
-                self.viewForFooter = {tableView, section in
+                self.viewForFooter = { tableView, section in
                     let footer = tableView.tb.dequeueReusableHeaderFooterView(anyClass: footerType)
                     reuse(tableView, section, footer)
                     return footer
@@ -132,8 +132,13 @@ extension TableBuilder.Section: ResultBuilderRule {
 }
 
 extension TableBuilder {
-    
+
     public struct Row {
+        
+        @resultBuilder
+        public struct Builder: ResultBuilderRule {
+            public typealias Base = TableBuilder.Row
+        }
         
         public enum RegisterType {
             case anyClass
@@ -162,14 +167,14 @@ extension TableBuilder {
         {
             self.autoCellHeight = autoCellHeight
             self.cellHeight = self.autoCellHeight == true ? UITableView.automaticDimension: cellHeight;
-            self.cellForRowAtIndexPath = {tableView, indexPath in
+            self.cellForRowAtIndexPath = { tableView, indexPath in
                 let cell = reuseType == .anyClass ?
                 tableView.tb.dequeueReusableCell(anyClass: cellType) :
                 tableView.tb.dequeueReusableCell(nibClass: cellType)
                 cellForRowAtIndexPath(tableView, indexPath, cell)
                 return cell
             }
-            self.didSelectRowAtIndexPath = {tableView, indexPath in
+            self.didSelectRowAtIndexPath = { tableView, indexPath in
                 guard let cell = tableView.cellForRow(at: indexPath) as? T else { return }
                 didSelectRowAtIndexPath?(tableView, indexPath, cell)
             }

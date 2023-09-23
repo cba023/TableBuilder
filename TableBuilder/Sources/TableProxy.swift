@@ -50,12 +50,23 @@ open class TableProxy: NSObject {
         tableView.delegate = self
     }
     
-    open func rebuild(_ tableBuilder: TableBuilder) {
-        self.builder = tableBuilder
-        self.reloadData()
+    public init (_ tableView: UITableView, _ rebuildCallback: @escaping () -> TableBuilder?) {
+        self.tableView = tableView
+        self.rebuildCallback = rebuildCallback
+        super.init()
+        tableView.dataSource = self
+        tableView.delegate = self
     }
     
+    open func rebuild(_ tableBuilder: TableBuilder) {
+        self.builder = tableBuilder
+        tableView.reloadData()
+    }
+    
+    open var rebuildCallback: (() -> TableBuilder?)?
+    
     open func reloadData() {
+        builder = rebuildCallback?()
         tableView.reloadData()
     }
     
@@ -65,6 +76,13 @@ open class TableProxy: NSObject {
     
     open func reloadRows(at indexPaths: [IndexPath], with animation: UITableView.RowAnimation) {
         tableView.reloadRows(at: indexPaths, with: animation)
+    }
+
+    open func appendRowsToLastSection(@TableBuilder.Row.Builder _ rows: () -> [TableBuilder.Row]) {
+        let numberOfSections = builder?.sections.count ?? 0
+        if numberOfSections == 0 { return }
+        builder?.sections[numberOfSections - 1].rows.append(contentsOf: rows())
+        tableView.reloadData()
     }
     
 }
