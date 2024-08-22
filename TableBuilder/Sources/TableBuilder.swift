@@ -7,27 +7,18 @@
 
 import UIKit
 
+
+
 @resultBuilder
-public struct TableBuilder {
-    
-    public var sections: [Section] = []
-    
-    public init(@TableBuilder _ sections: () -> [Section]) {
-        self.sections = sections()
-    }
-
-}
-
-extension TableBuilder: ResultBuilderRule {
-
-    public typealias Base = Section
-    
-}
-
-extension TableBuilder {
+public struct  TableBuilder {
     
     @resultBuilder
     public struct Section {
+        
+        @resultBuilder
+        public struct Builder: ResultBuilderRule {
+            public typealias Base = TableBuilder.Section
+        }
         
         public enum HeaderFooterReuseType<N: UIView, C: UITableViewHeaderFooterView> {
             case nibClass(
@@ -125,6 +116,12 @@ extension TableBuilder {
     }
 }
 
+extension TableBuilder: ResultBuilderRule {
+
+    public typealias Base = Section
+    
+}
+
 extension TableBuilder.Section: ResultBuilderRule {
 
     public typealias Base = TableBuilder.Row
@@ -183,7 +180,6 @@ extension TableBuilder {
                 willDisplay?(tableView, cell , indexPath)
             }
         }
-        
     }
     
 }

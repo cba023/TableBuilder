@@ -12,7 +12,7 @@ class ListVC: UIViewController {
     
     @IBOutlet weak var tableView: UITableView!
     
-    var tableProxy: TableProxy!
+    var tableProxy: TableProxy<ListVC>!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -22,13 +22,11 @@ class ListVC: UIViewController {
     var show: Bool = true
     
     func buildTable() {
-        tableProxy = TableProxy(tableView) { [weak self] in
-            guard let self = self else { return nil }
-            return TableBuilder {
-                for _ in 0..<3 {
-                    TableBuilder.Section(
-                        headerHeight: 50,
-                        headerReuse: .anyClass(UITableViewHeaderFooterView.self, { tableView, section, reusableView in
+        tableProxy = TableProxy(tableView, with: self) { `self` in
+            for _ in 0..<3 {
+                TableBuilder.Section(
+                    headerHeight: 50,
+                    headerReuse: .anyClass(UITableViewHeaderFooterView.self, { tableView, section, reusableView in
                         reusableView.contentView.backgroundColor = .red
                     }, { tableView, reusableView, indexPath in
                         /// headerWillDisplay
@@ -92,7 +90,6 @@ class ListVC: UIViewController {
                             }
                         }
                     }
-                }
             }
         }
         tableProxy.didSelectRowAtIndexPath = { tableView, indexPath in

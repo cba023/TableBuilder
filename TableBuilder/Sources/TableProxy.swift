@@ -7,9 +7,9 @@
 
 import UIKit
 
-open class TableProxy: NSObject {
+open class TableProxy<T: NSObject>: NSObject, UITableViewDataSource, UITableViewDelegate, UIScrollViewDelegate {
     
-    open var builder: TableBuilder?
+    open var sections: [TableBuilder.Section] = []
     
     open var didSelectRowAtIndexPath: ((_ tableView: UITableView, _ indexPath: IndexPath) -> ())?
     
@@ -42,31 +42,22 @@ open class TableProxy: NSObject {
     open var shouldIndentWhileEditing: ((_ tableView: UITableView, _ indexPath: IndexPath?) -> Bool)?
     
     open var tableView: UITableView
-    
-    public init(_ tableView: UITableView) {
+
+    public init (_ tableView: UITableView, with target: T, @TableBuilder.Section.Builder _ sections: @escaping (_ target: T) -> [TableBuilder.Section]?) {
         self.tableView = tableView
+        self.rebuildSections = { [weak target] in
+            guard let target = target else { return nil }
+            return sections(target)
+        }
         super.init()
         tableView.dataSource = self
         tableView.delegate = self
     }
-    
-    public init (_ tableView: UITableView, _ rebuildCallback: @escaping () -> TableBuilder?) {
-        self.tableView = tableView
-        self.rebuildCallback = rebuildCallback
-        super.init()
-        tableView.dataSource = self
-        tableView.delegate = self
-    }
-    
-    open func rebuild(_ tableBuilder: TableBuilder) {
-        self.builder = tableBuilder
-        tableView.reloadData()
-    }
-    
-    open var rebuildCallback: (() -> TableBuilder?)?
+
+    open var rebuildSections: (() -> [TableBuilder.Section]?)?
     
     open func reloadData() {
-        builder = rebuildCallback?()
+        sections = rebuildSections?() ?? []
         tableView.reloadData()
     }
     
@@ -79,84 +70,82 @@ open class TableProxy: NSObject {
     }
 
     open func appendRowsToLastSection(@TableBuilder.Row.Builder _ rows: () -> [TableBuilder.Row]) {
-        let numberOfSections = builder?.sections.count ?? 0
+        let numberOfSections = sections.count
         if numberOfSections == 0 { return }
-        builder?.sections[numberOfSections - 1].rows.append(contentsOf: rows())
+        sections[numberOfSections - 1].rows.append(contentsOf: rows())
         tableView.reloadData()
     }
     
-}
-
-extension TableProxy: UITableViewDataSource, UITableViewDelegate {
+    // MARK: UITableViewDataSource & UITableViewDelegate
     
     open func numberOfSections(in tableView: UITableView) -> Int {
-        return builder?.sections.count ?? 0
+        return sections.count
     }
     
     open func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return builder?.sections[section].rows.count ?? 0
+        return sections[section].rows.count
     }
     
     open func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return builder?.sections[section].headerHeight ?? 0
+        return sections[section].headerHeight
     }
     
     open func tableView(_ tableView: UITableView, estimatedHeightForHeaderInSection section: Int) -> CGFloat {
-        return builder?.sections[section].headerHeight ?? 0
+        return sections[section].headerHeight
     }
     
     open func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        return builder?.sections[section].footerHeight ?? 0
+        return sections[section].footerHeight
     }
     
     open func tableView(_ tableView: UITableView, estimatedHeightForFooterInSection section: Int) -> CGFloat {
-        return builder?.sections[section].headerHeight ?? 0
+        return sections[section].headerHeight
     }
     
     open func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return builder?.sections[indexPath.section].rows[indexPath.row].cellHeight ?? 0
+        return sections[indexPath.section].rows[indexPath.row].cellHeight
     }
     
     open func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
-        return builder?.sections[indexPath.section].rows[indexPath.row].cellHeight ?? 0
+        return sections[indexPath.section].rows[indexPath.row].cellHeight
     }
     
     open func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let sectionBuilder = builder!.sections[section]
+        let sectionBuilder = sections[section]
         return sectionBuilder.viewForHeader?(tableView, section)
     }
     
     open func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-        let sectionBuilder = builder!.sections[section]
+        let sectionBuilder = sections[section]
         return sectionBuilder.viewForFooter?(tableView, section)
     }
     
     open func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let sectionBuilder = builder!.sections[indexPath.section]
+        let sectionBuilder = sections[indexPath.section]
         let rowBuilder = sectionBuilder.rows[indexPath.row]
         return rowBuilder.cellForRowAtIndexPath(tableView, indexPath)
     }
     
     open func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         didSelectRowAtIndexPath?(tableView, indexPath)
-        let sectionBuilder = builder!.sections[indexPath.section]
+        let sectionBuilder = sections[indexPath.section]
         let rowBuilder = sectionBuilder.rows[indexPath.row]
         rowBuilder.didSelectRowAtIndexPath(tableView, indexPath)
     }
     
     open func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
-        let sectionBuilder = builder!.sections[section]
+        let sectionBuilder = sections[section]
         sectionBuilder.headerWillDisplay?(tableView, view, section)
     }
     
     open func tableView(_ tableView: UITableView, willDisplayFooterView view: UIView, forSection section: Int) {
-        let sectionBuilder = builder!.sections[section]
+        let sectionBuilder = sections[section]
         sectionBuilder.footerWillDisplay?(tableView, view, section)
     }
     
     open func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         willDisplay?(tableView, cell, indexPath)
-        let sectionBuilder = builder!.sections[indexPath.section]
+        let sectionBuilder = sections[indexPath.section]
         let rowBuilder = sectionBuilder.rows[indexPath.row]
         rowBuilder.willDisplay(tableView, cell, indexPath)
     }
@@ -189,9 +178,7 @@ extension TableProxy: UITableViewDataSource, UITableViewDelegate {
         return shouldIndentWhileEditing?(tableView, indexPath) ?? false
     }
     
-}
-
-extension TableProxy: UIScrollViewDelegate {
+    // MARK: UIScrollViewDelegate
     
     open func scrollViewDidScroll(_ scrollView: UIScrollView) {
         didScroll?(scrollView)
@@ -218,4 +205,3 @@ extension TableProxy: UIScrollViewDelegate {
     }
     
 }
-
