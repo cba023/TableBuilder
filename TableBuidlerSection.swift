@@ -12,24 +12,6 @@ extension TableBuilder {
     @resultBuilder
     public struct Section {
         
-        @resultBuilder
-        public struct Builder: ResultBuilderRule {
-            public typealias Base = TableBuilder.Section
-        }
-        
-        public enum HeaderFooterReuseType<N: UIView, C: UITableViewHeaderFooterView> {
-            case nibClass(
-                _ class: N.Type,
-                _ view: (_ tableView: UITableView, _ section: Int, _ reusableView: N) -> (),
-                _ willDisplay: ((_ tableView: UITableView, _ reusableView: N, _ section: Int) -> ())? = nil
-            )
-            case anyClass(
-                _ class: C.Type,
-                _ view:(_ tableView: UITableView, _ section: Int, _ reusableView: C) -> (),
-                _ willDisplay: ((_ tableView: UITableView, _ reusableView: C, _ section: Int) -> ())? = nil
-            )
-        }
-        
         public var rows: [Row] = []
         
         public let headerHeight: CGFloat
@@ -113,8 +95,28 @@ extension TableBuilder {
     }
 }
 
+extension TableBuilder.Section {
+
+    @resultBuilder
+    public struct Builder: ResultBuilderRule {
+        public typealias Base = TableBuilder.Section
+    }
+    
+    public enum HeaderFooterReuseType<N: UIView, C: UITableViewHeaderFooterView> {
+        case nibClass(
+            _ class: N.Type,
+            _ view: (_ tableView: UITableView, _ section: Int, _ reusableView: N) -> (),
+            _ willDisplay: ((_ tableView: UITableView, _ reusableView: N, _ section: Int) -> ())? = nil
+        )
+        case anyClass(
+            _ class: C.Type,
+            _ view:(_ tableView: UITableView, _ section: Int, _ reusableView: C) -> (),
+            _ willDisplay: ((_ tableView: UITableView, _ reusableView: C, _ section: Int) -> ())? = nil
+        )
+    }
+}
+
 extension TableBuilder.Section: ResultBuilderRule {
-
+    
     public typealias Base = TableBuilder.Row
-
 }

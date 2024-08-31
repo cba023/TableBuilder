@@ -11,16 +11,6 @@ extension TableBuilder {
 
     public struct Row {
         
-        @resultBuilder
-        public struct Builder: ResultBuilderRule {
-            public typealias Base = TableBuilder.Row
-        }
-        
-        public enum RegisterType {
-            case anyClass
-            case nib
-        }
-        
         let cellHeight: CGFloat
         
         let autoCellHeight: Bool
@@ -66,5 +56,21 @@ extension TableBuilder {
             }
             return newValue
         }
+    }
+}
+
+extension TableBuilder.Row {
+    
+    public enum RegisterType {
+        case anyClass
+        case nib
+    }
+}
+
+extension TableBuilder.Row {
+    
+    @resultBuilder
+    public struct Builder: ResultBuilderRule {
+        public typealias Base = TableBuilder.Row
     }
 }

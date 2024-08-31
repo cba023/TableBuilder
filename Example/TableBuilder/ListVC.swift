@@ -37,16 +37,20 @@ class ListVC: UIViewController {
                         }
                     )
                 ) {
-                    TableBuilder.Row(target: target, cellHeight: 50, cellType: TableViewCell1.self, reuseType: .nib) { target, tableView, indexPath, cell in
+                    let r  = TableBuilder.Row(target: target, cellHeight: 50, cellType: TableViewCell1.self, reuseType: .nib) { target, tableView, indexPath, cell in
                         
                     }
-                    .didSelected(target: target, { target, tableView, indexPath in
-                        print(tableView)
-                        target.show = false
-                    })
-                    .willDisplay(target: target) { target, tableView, cell, indexPath in
-//                        cell.name = "yoyo"
-                    }
+                    
+                    
+//                    .didSelected(target: target) { target, tableView, indexPath in
+//                        print(tableView)
+//                        target.show = false
+//                    }
+//                    .willDisplay(target: target) { target, tableView, cell, indexPath in
+////                        cell.name = "yoyo"
+//                    }
+                return [r]
+                
                 }
             }
         }

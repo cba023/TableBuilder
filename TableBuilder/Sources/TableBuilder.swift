@@ -69,7 +69,7 @@ public class TableBuilder<Target: AnyObject>: NSObject, UITableViewDataSource, U
         tableView.reloadRows(at: indexPaths, with: animation)
     }
 
-    open func appendRowsToLastSection(@Row.Builder _ rows: () -> [Row]) {
+    open func appendRowsToLastSection(@TableBuilder.Row.Builder _ rows: () -> [TableBuilder.Row]) {
         let numberOfSections = sections.count
         if numberOfSections == 0 { return }
         sections[numberOfSections - 1].rows.append(contentsOf: rows())
