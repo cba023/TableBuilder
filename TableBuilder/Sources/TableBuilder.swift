@@ -6,114 +6,205 @@
 //
 
 import UIKit
-import SwiftUI
 
-
-@resultBuilder
-public struct  TableBuilder {
+public class TableBuilder<Target: AnyObject>: NSObject, UITableViewDataSource, UITableViewDelegate, UIScrollViewDelegate {
     
-    @resultBuilder
-    public struct Section {
-        
-        @resultBuilder
-        public struct Builder: ResultBuilderRule {
-            public typealias Base = TableBuilder.Section
+    open var sections: [TableBuilder.Section] = []
+    
+    open var didSelectRowAtIndexPath: ((_ tableView: UITableView, _ indexPath: IndexPath) -> ())?
+    
+    open var willDisplay: ((_ tableView: UITableView, _ cell: UITableViewCell, _ indexPath: IndexPath) -> ())?
+    
+    open var didScroll: ((_ scrollView: UIScrollView) -> ())?
+    
+    open var willBeginDragging: ((_ scrollView: UIScrollView) -> ())?
+    
+    open var didEndDragging: ((_ scrollView: UIScrollView, _ willDecelerate: Bool) -> ())?
+    
+    open var willBeginDecelerating: ((_ scrollView: UIScrollView) -> ())?
+    
+    open var didEndDecelerating: ((_ scrollView: UIScrollView) -> ())?
+    
+    open var didEndScrollingAnimation: ((_ scrollView: UIScrollView) -> ())?
+    
+    open var canEditRow: ((_ tableView: UITableView, _ indexPath: IndexPath) -> Bool)?
+    
+    open var commitEdit: ((_ tableView: UITableView, _ editingStyle: UITableViewCell.EditingStyle, _ indexPath: IndexPath) -> ())?
+    
+    open var willBeginEditing: ((_ tableView: UITableView, _ indexPath: IndexPath) -> ())?
+    
+    open var didEndEditing: ((_ tableView: UITableView, _ indexPath: IndexPath?) -> ())?
+    
+    open var editStyle: ((_ tableView: UITableView, _ indexPath: IndexPath) -> UITableViewCell.EditingStyle)?
+    
+    open var titleForDeleteConfirmationButton: ((_ tableView: UITableView, _ indexPath: IndexPath?) -> String?)?
+    
+    open var shouldIndentWhileEditing: ((_ tableView: UITableView, _ indexPath: IndexPath?) -> Bool)?
+    
+    open var tableView: UITableView
+
+    public init (_ tableView: UITableView, with target: Target, @TableBuilder.Section.Builder _ sections: @escaping (_ target: Target) -> [TableBuilder.Section]) {
+        self.tableView = tableView
+        self.rebuildSections = { [weak target] in
+            guard let target = target else { return [] }
+            return sections(target)
         }
-        
-        public enum HeaderFooterReuseType<N: UIView, C: UITableViewHeaderFooterView> {
-            case nibClass(
-                _ class: N.Type,
-                _ view: (_ tableView: UITableView, _ section: Int, _ reusableView: N) -> (),
-                _ willDisplay: ((_ tableView: UITableView, _ reusableView: N, _ section: Int) -> ())? = nil
-            )
-            case anyClass(
-                _ class: C.Type,
-                _ view:(_ tableView: UITableView, _ section: Int, _ reusableView: C) -> (),
-                _ willDisplay: ((_ tableView: UITableView, _ reusableView: C, _ section: Int) -> ())? = nil
-            )
-        }
-        
-        public var rows: [Row] = []
-        
-        public let headerHeight: CGFloat
-        
-        public let autoHeaderHeight: Bool
-        
-        public var viewForHeader: ((_ tableView: UITableView, _ section: Int) -> UIView?)?
-        
-        public var headerWillDisplay: ((_ tableView: UITableView, _ reusableView: UIView, _ section: Int) -> ())?
-        
-        public var footerWillDisplay: ((_ tableView: UITableView, _ reusableView: UIView, _ section: Int) -> ())?
-        
-        public let autoFooterHeight: Bool
-        
-        public let footerHeight: CGFloat
-        
-        public var viewForFooter: ((_ tableView: UITableView, _ section: Int) -> UIView?)?
-        
-        public init<H1: UIView, F1: UIView, H2: UITableViewHeaderFooterView, F2: UITableViewHeaderFooterView>(
-            headerHeight: CGFloat = CGFloat.leastNormalMagnitude,
-            autoHeaderHeight: Bool = false,
-            headerReuse: HeaderFooterReuseType<H1, H2>? = nil,
-            footerHeight: CGFloat = CGFloat.leastNormalMagnitude,
-            autoFooterHeight: Bool = false,
-            footerReuse: HeaderFooterReuseType<F1, F2>? = nil,
-            @Section _ rows: () -> [Row]
-        ) {
-            self.autoHeaderHeight = autoHeaderHeight
-            self.autoFooterHeight = autoFooterHeight
-            self.headerHeight = self.autoHeaderHeight ? UITableView.automaticDimension : headerHeight
-            self.footerHeight = self.autoFooterHeight ? UITableView.automaticDimension : footerHeight
-            
-            switch headerReuse {
-            case let .nibClass(headerType, reuse, willDisaplay):
-                self.viewForHeader = { tableView, section in
-                    let header = tableView.tb.dequeueReusableHeaderFooterView(nibClass: headerType)
-                    reuse(tableView, section, header)
-                    return header
-                }
-                self.headerWillDisplay = { tableView, cell, indexPath in
-                    willDisaplay?(tableView, cell as! H1, indexPath)
-                }
-            case let .anyClass(headerType, reuse, willDisplay):
-                self.viewForHeader = { tableView, section in
-                    let header = tableView.tb.dequeueReusableHeaderFooterView(anyClass: headerType)
-                    reuse(tableView, section, header)
-                    return header
-                }
-                self.headerWillDisplay = { tableView, cell, indexPath in
-                    willDisplay?(tableView, cell as! H2, indexPath)
-                }
-            case .none:
-                self.viewForHeader = nil
-            }
-            
-            switch footerReuse {
-            case let .nibClass(footerType, reuse, willDisplay):
-                self.viewForFooter = { tableView, section in
-                    let footer = tableView.tb.dequeueReusableHeaderFooterView(nibClass: footerType)
-                    reuse(tableView, section, footer)
-                    return footer
-                }
-                self.footerWillDisplay = { tableView, cell, indexPath in
-                    willDisplay?(tableView, cell as! F1, indexPath)
-                }
-            case let .anyClass(footerType, reuse, willDisplay):
-                self.viewForFooter = { tableView, section in
-                    let footer = tableView.tb.dequeueReusableHeaderFooterView(anyClass: footerType)
-                    reuse(tableView, section, footer)
-                    return footer
-                }
-                self.footerWillDisplay = { tableView, cell, indexPath in
-                    willDisplay?(tableView, cell as! F2, indexPath)
-                }
-            case .none:
-                self.viewForFooter = nil
-                self.footerWillDisplay = nil
-            }
-            self.rows = rows()
-        }
+        super.init()
+        tableView.dataSource = self
+        tableView.delegate = self
     }
+
+    open var rebuildSections: (() -> [TableBuilder.Section]?)?
+    
+    open func reloadData() {
+        sections = rebuildSections?() ?? []
+        tableView.reloadData()
+    }
+    
+    open func reloadSections(sections: IndexSet, with animation: UITableView.RowAnimation) {
+        tableView.reloadSections(sections, with: animation)
+    }
+    
+    open func reloadRows(at indexPaths: [IndexPath], with animation: UITableView.RowAnimation) {
+        tableView.reloadRows(at: indexPaths, with: animation)
+    }
+
+    open func appendRowsToLastSection(@TableBuilder.Row.Builder _ rows: () -> [TableBuilder.Row]) {
+        let numberOfSections = sections.count
+        if numberOfSections == 0 { return }
+        sections[numberOfSections - 1].rows.append(contentsOf: rows())
+        tableView.reloadData()
+    }
+    
+    // MARK: UITableViewDataSource & UITableViewDelegate
+    
+    open func numberOfSections(in tableView: UITableView) -> Int {
+        return sections.count
+    }
+    
+    open func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return sections[section].rows.count
+    }
+    
+    open func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return sections[section].headerHeight
+    }
+    
+    open func tableView(_ tableView: UITableView, estimatedHeightForHeaderInSection section: Int) -> CGFloat {
+        return sections[section].headerHeight
+    }
+    
+    open func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        return sections[section].footerHeight
+    }
+    
+    open func tableView(_ tableView: UITableView, estimatedHeightForFooterInSection section: Int) -> CGFloat {
+        return sections[section].headerHeight
+    }
+    
+    open func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return sections[indexPath.section].rows[indexPath.row].cellHeight
+    }
+    
+    open func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
+        return sections[indexPath.section].rows[indexPath.row].cellHeight
+    }
+    
+    open func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        let sectionBuilder = sections[section]
+        return sectionBuilder.viewForHeader?(tableView, section)
+    }
+    
+    open func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+        let sectionBuilder = sections[section]
+        return sectionBuilder.viewForFooter?(tableView, section)
+    }
+    
+    open func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let sectionBuilder = sections[indexPath.section]
+        let rowBuilder = sectionBuilder.rows[indexPath.row]
+        return rowBuilder.cellForRowAtIndexPath(tableView, indexPath)
+    }
+    
+    open func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        didSelectRowAtIndexPath?(tableView, indexPath)
+        let sectionBuilder = sections[indexPath.section]
+        let rowBuilder = sectionBuilder.rows[indexPath.row]
+        rowBuilder.didSelectRowAtIndexPath?(tableView, indexPath)
+    }
+    
+    open func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
+        let sectionBuilder = sections[section]
+        sectionBuilder.headerWillDisplay?(tableView, view, section)
+    }
+    
+    open func tableView(_ tableView: UITableView, willDisplayFooterView view: UIView, forSection section: Int) {
+        let sectionBuilder = sections[section]
+        sectionBuilder.footerWillDisplay?(tableView, view, section)
+    }
+    
+    open func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        willDisplay?(tableView, cell, indexPath)
+        let sectionBuilder = sections[indexPath.section]
+        let rowBuilder = sectionBuilder.rows[indexPath.row]
+        rowBuilder.willDisplay?(tableView, cell, indexPath)
+    }
+    
+    open func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+        return canEditRow?(tableView, indexPath) ?? false
+    }
+
+    open func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        commitEdit?(tableView, editingStyle, indexPath)
+    }
+    
+    open func tableView(_ tableView: UITableView, willBeginEditingRowAt indexPath: IndexPath) {
+        willBeginEditing?(tableView, indexPath)
+    }
+    
+    open func tableView(_ tableView: UITableView, didEndEditingRowAt indexPath: IndexPath?) {
+        didEndEditing?(tableView, indexPath)
+    }
+    
+    open func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
+        return editStyle?(tableView, indexPath) ?? .none
+    }
+    
+    open func tableView(_ tableView: UITableView, titleForDeleteConfirmationButtonForRowAt indexPath: IndexPath) -> String? {
+        return titleForDeleteConfirmationButton?(tableView, indexPath)
+    }
+    
+    open func tableView(_ tableView: UITableView, shouldIndentWhileEditingRowAt indexPath: IndexPath) -> Bool {
+        return shouldIndentWhileEditing?(tableView, indexPath) ?? false
+    }
+    
+    // MARK: UIScrollViewDelegate
+    
+    open func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        didScroll?(scrollView)
+    }
+    
+    open func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        willBeginDragging?(scrollView)
+    }
+
+    open func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        didEndDragging?(scrollView, decelerate)
+    }
+    
+    open func scrollViewWillBeginDecelerating(_ scrollView: UIScrollView) {
+        willBeginDecelerating?(scrollView)
+    }
+    
+    open func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        didEndDecelerating?(scrollView)
+    }
+    
+    open func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
+        didEndScrollingAnimation?(scrollView)
+    }
+    
+    
 }
 
 extension TableBuilder: ResultBuilderRule {
@@ -121,76 +212,3 @@ extension TableBuilder: ResultBuilderRule {
     public typealias Base = Section
     
 }
-
-extension TableBuilder.Section: ResultBuilderRule {
-
-    public typealias Base = TableBuilder.Row
-
-}
-
-extension TableBuilder {
-
-    public struct Row {
-        
-        @resultBuilder
-        public struct Builder: ResultBuilderRule {
-            public typealias Base = TableBuilder.Row
-        }
-        
-        public enum RegisterType {
-            case anyClass
-            case nib
-        }
-        
-        let cellHeight: CGFloat
-        
-        let autoCellHeight: Bool
-        
-        let cellForRowAtIndexPath: (_ tableView: UITableView, _ indexPath: IndexPath) -> UITableViewCell
-        
-        var didSelectRowAtIndexPath: ((_ tableView: UITableView, _ indexPath: IndexPath) -> ())?
-
-        var willDisplay: ((_ tableView: UITableView, _ cell: UITableViewCell, _ indexPath: IndexPath) -> ())?
-        
-        public init<Target: NSObject, T: UITableViewCell>(
-            target: Target,
-            cellHeight: CGFloat,
-            autoCellHeight: Bool = false,
-            cellType: T.Type,
-            reuseType: RegisterType = .anyClass,
-            _ cellForRowAtIndexPath: @escaping (_ target: Target, _ tableView: UITableView, _ indexPath:IndexPath, _ cell: T) -> (),
-            willDisplay:((_ tableView: UITableView, _ cell: T, _ indexPath: IndexPath) -> ())? = nil
-        ) {
-            self.autoCellHeight = autoCellHeight
-            self.cellHeight = self.autoCellHeight == true ? UITableView.automaticDimension: cellHeight;
-            self.cellForRowAtIndexPath = { [weak target] tableView, indexPath in
-                let cell = reuseType == .anyClass ? tableView.tb.dequeueReusableCell(anyClass: cellType) : tableView.tb.dequeueReusableCell(nibClass: cellType)
-                guard let target else { return cell }
-                cellForRowAtIndexPath(target, tableView, indexPath, cell)
-                return cell
-            }
-        }
-        
-        public func didSelected<Target: NSObject>(target: Target, _ callback: @escaping (_ target: Target, _ tableView: UITableView, _ indexPath: IndexPath) -> ()) -> Self {
-            var newValue = self
-            newValue.didSelectRowAtIndexPath = {[weak target] tableView, indexPath in
-                guard let target else { return }
-                callback(target, tableView, indexPath)
-            }
-            return newValue
-        }
-        
-        public func willDisplay<Target: NSObject>(target: Target, _ callback: @escaping (_ target: Target, _ tableView: UITableView, _ cell: UITableViewCell, _ indexPath: IndexPath) -> ()) -> Self {
-            var newValue = self
-            newValue.willDisplay = { [weak target] tableView, cell, indexPath in
-                guard let target else { return }
-                callback(target, tableView, cell, indexPath)
-            }
-            return newValue
-        }
-    }
-    
-}
-
-
-

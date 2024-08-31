@@ -7,8 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		093F21179F1CE6286014633B9E7179A7 /* TableProxy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 991DD72A2B008110A10E7FF2A27E63BB /* TableProxy.swift */; };
 		1AA26C6B94D1305BAC77DEE608B55CE3 /* ResultBuilderRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34192E230965FD9C5FDC69627AC12F88 /* ResultBuilderRule.swift */; };
+		78F56C292C8377A600041BB4 /* TableBuidlerSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78F56C282C8377A600041BB4 /* TableBuidlerSection.swift */; };
+		78F56C2B2C8377E600041BB4 /* TableBuidlerRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78F56C2A2C8377E600041BB4 /* TableBuidlerRow.swift */; };
 		7DA65611EFF779E11059936D9FFE5E11 /* UITableView+TableBuildable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57B9D8E6866AADA6C28AB0E37CECDA9D /* UITableView+TableBuildable.swift */; };
 		96896954B3253C8A372538474B1E399C /* TableBuilder-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = F0453784986B42ACEFB28496B3A849F2 /* TableBuilder-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A9D93168769014EA20CBD69968F7E2A7 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73010CC983E3809BECEE5348DA1BB8C6 /* Foundation.framework */; };
@@ -42,12 +43,13 @@
 		6ADDA8FC94AFCCCBD8F6C9FFA5FE3E07 /* Pods-TableBuilder_Example-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-TableBuilder_Example-acknowledgements.markdown"; sourceTree = "<group>"; };
 		6BEE3DC7123339232FE9FB89BD3884C1 /* Pods-TableBuilder_Example */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = "Pods-TableBuilder_Example"; path = Pods_TableBuilder_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		73010CC983E3809BECEE5348DA1BB8C6 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS14.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
+		78F56C282C8377A600041BB4 /* TableBuidlerSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableBuidlerSection.swift; sourceTree = "<group>"; };
+		78F56C2A2C8377E600041BB4 /* TableBuidlerRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableBuidlerRow.swift; sourceTree = "<group>"; };
 		81BE79BB92C2A967534BFA1240D0A894 /* TableBuilder.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = TableBuilder.modulemap; sourceTree = "<group>"; };
 		830D25A16FDC98C1344B24E0CE0C60C5 /* TableBuilder-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "TableBuilder-prefix.pch"; sourceTree = "<group>"; };
 		8A334EF6C6AF05DA19F83E9A9261E2C7 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		9630FB46EDFED6857E09BE089104E0AB /* TableBuilder.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = TableBuilder.debug.xcconfig; sourceTree = "<group>"; };
 		9712B96EB7B4221DEEA66D92F741AF8F /* TableBuilder.podspec */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; path = TableBuilder.podspec; sourceTree = "<group>"; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
-		991DD72A2B008110A10E7FF2A27E63BB /* TableProxy.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = TableProxy.swift; path = TableBuilder/Sources/TableProxy.swift; sourceTree = "<group>"; };
 		9D940727FF8FB9C785EB98E56350EF41 /* Podfile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		A660859C8313FB3E31244706C7074E50 /* Pods-TableBuilder_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-TableBuilder_Example.release.xcconfig"; sourceTree = "<group>"; };
 		A77B70C10D6EEF0B5E51EC5D72050346 /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
@@ -94,8 +96,9 @@
 			children = (
 				34192E230965FD9C5FDC69627AC12F88 /* ResultBuilderRule.swift */,
 				F800893187D7E8BFCC2249BF10F77B54 /* TableBuildable.swift */,
+				78F56C282C8377A600041BB4 /* TableBuidlerSection.swift */,
+				78F56C2A2C8377E600041BB4 /* TableBuidlerRow.swift */,
 				FBD284FA726BE1749F4A224F69EF2D38 /* TableBuilder.swift */,
-				991DD72A2B008110A10E7FF2A27E63BB /* TableProxy.swift */,
 				57B9D8E6866AADA6C28AB0E37CECDA9D /* UITableView+TableBuildable.swift */,
 				966AF3A07BAA74E78A849492DE7AD1B0 /* Pod */,
 				E61E1B8EB76A75237DD8AC7AEB4D3388 /* Support Files */,
@@ -309,9 +312,10 @@
 			files = (
 				1AA26C6B94D1305BAC77DEE608B55CE3 /* ResultBuilderRule.swift in Sources */,
 				B0DFDE6EFAFE1AAA21AF98C23D1A0F6B /* TableBuildable.swift in Sources */,
+				78F56C292C8377A600041BB4 /* TableBuidlerSection.swift in Sources */,
 				C04716E64CB32135926151559CB79D9F /* TableBuilder.swift in Sources */,
+				78F56C2B2C8377E600041BB4 /* TableBuidlerRow.swift in Sources */,
 				BC242A6B7FF29590A51D111623C39A6F /* TableBuilder-dummy.m in Sources */,
-				093F21179F1CE6286014633B9E7179A7 /* TableProxy.swift in Sources */,
 				7DA65611EFF779E11059936D9FFE5E11 /* UITableView+TableBuildable.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

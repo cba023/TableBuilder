@@ -9,11 +9,6 @@ import UIKit
 
 extension TableBuildableWrapper where Base: UITableView {
     
-    /// 命名空间
-    private func nameSpace(bundle: Bundle) -> String? {
-        return bundle.infoDictionary?["CFBundleExecutable"] as? String
-    }
-    
     /// 获取指定类的类名
     private func className<Object: AnyObject>(_ cls: Object.Type) -> String {
         let className = NSStringFromClass(cls)

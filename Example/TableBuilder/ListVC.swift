@@ -12,7 +12,9 @@ class ListVC: UIViewController {
     
     @IBOutlet weak var tableView: UITableView!
     
-    var tableProxy: TableProxy<ListVC>!
+//    var tableProxy: TableProxy<ListVC>!
+    
+    var tableBuilder: TableBuilder<ListVC>!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -22,7 +24,7 @@ class ListVC: UIViewController {
     var show: Bool = true
     
     func buildTable() {
-        tableProxy = TableProxy(tableView, with: self) { target in
+        tableBuilder = TableBuilder(tableView, with: self) { target in
             for _ in 0..<10 {
                 TableBuilder.Section(
                     headerHeight: 50,
@@ -53,7 +55,7 @@ class ListVC: UIViewController {
 //        tableProxy.didSelectRowAtIndexPath = { tableView, indexPath in
 //            print("clicked: \(indexPath.section) - \(indexPath.row)")
 //        }
-        tableProxy.reloadData()
+        tableBuilder.reloadData()
     }
     
     deinit {
@@ -61,7 +63,7 @@ class ListVC: UIViewController {
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        tableProxy.appendRowsToLastSection {
+        tableBuilder.appendRowsToLastSection {
 //            for _ in 0..<10 {
 //                TableBuilder.Row(
 //                    cellHeight: 30,
