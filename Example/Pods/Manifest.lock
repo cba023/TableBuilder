@@ -1,5 +1,5 @@
 PODS:
-  - TableBuilder (0.1.0)
+  - TableBuilder (2.0.5)
 
 DEPENDENCIES:
   - TableBuilder (from `../`)
@@ -9,8 +9,8 @@ EXTERNAL SOURCES:
     :path: "../"
 
 SPEC CHECKSUMS:
-  TableBuilder: 3e0227435badcd32ac017c296482940c4f3c4e17
+  TableBuilder: eb7dcdd6c18db246a66da75283ce1f6391954407
 
-PODFILE CHECKSUM: 40269abc1a9c26087945f5b1b7048d4a69cf8506
+PODFILE CHECKSUM: 937ae58b46fafbdecd1c14dbc132973ac52a5d95
 
-COCOAPODS: 1.12.1
+COCOAPODS: 1.14.2

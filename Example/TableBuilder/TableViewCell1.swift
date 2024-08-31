@@ -10,6 +10,8 @@ import UIKit
 
 class TableViewCell1: UITableViewCell {
 
+    var name: String = "haha"
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code

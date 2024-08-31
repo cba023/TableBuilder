@@ -130,7 +130,7 @@ open class TableProxy<T: NSObject>: NSObject, UITableViewDataSource, UITableView
         didSelectRowAtIndexPath?(tableView, indexPath)
         let sectionBuilder = sections[indexPath.section]
         let rowBuilder = sectionBuilder.rows[indexPath.row]
-        rowBuilder.didSelectRowAtIndexPath(tableView, indexPath)
+        rowBuilder.didSelectRowAtIndexPath?(tableView, indexPath)
     }
     
     open func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
@@ -147,7 +147,7 @@ open class TableProxy<T: NSObject>: NSObject, UITableViewDataSource, UITableView
         willDisplay?(tableView, cell, indexPath)
         let sectionBuilder = sections[indexPath.section]
         let rowBuilder = sectionBuilder.rows[indexPath.row]
-        rowBuilder.willDisplay(tableView, cell, indexPath)
+        rowBuilder.willDisplay?(tableView, cell, indexPath)
     }
     
     open func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {

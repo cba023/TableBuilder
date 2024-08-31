@@ -1,9 +1,11 @@
 {
   "name": "TableBuilder",
-  "version": "0.1.0",
-  "summary": "A short description of TableBuilder.",
-  "description": "TODO: Add long description of the pod here.",
-  "homepage": "https://github.com/chenbo/TableBuilder",
+  "version": "2.0.5",
+  "pod_target_xcconfig": {
+    "SWIFT_VERSION": "5.8"
+  },
+  "summary": "Easier to write TableView page.",
+  "homepage": "https://github.com/cba023/TableBuilder",
   "license": {
     "type": "MIT",
     "file": "LICENSE"
@@ -12,11 +14,11 @@
     "chenbo": "cba023@hotmail.com"
   },
   "source": {
-    "git": "https://github.com/chenbo/TableBuilder.git",
-    "tag": "0.1.0"
+    "git": "https://github.com/cba023/TableBuilder.git",
+    "tag": "2.0.5"
   },
   "platforms": {
-    "ios": "10.0"
+    "ios": "11.0"
   },
   "source_files": "TableBuilder/Sources/**/*"
 }

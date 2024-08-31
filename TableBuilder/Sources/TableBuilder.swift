@@ -6,7 +6,7 @@
 //
 
 import UIKit
-
+import SwiftUI
 
 
 @resultBuilder
@@ -146,38 +146,47 @@ extension TableBuilder {
         
         let autoCellHeight: Bool
         
-        let didSelectRowAtIndexPath: (_ tableView: UITableView, _ indexPath: IndexPath) -> ()
-        
         let cellForRowAtIndexPath: (_ tableView: UITableView, _ indexPath: IndexPath) -> UITableViewCell
         
-        let willDisplay: (_ tableView: UITableView, _ cell: UITableViewCell, _ indexPath: IndexPath) -> ()
+        var didSelectRowAtIndexPath: ((_ tableView: UITableView, _ indexPath: IndexPath) -> ())?
+
+        var willDisplay: ((_ tableView: UITableView, _ cell: UITableViewCell, _ indexPath: IndexPath) -> ())?
         
-        public init<T: UITableViewCell>(
+        public init<Target: NSObject, T: UITableViewCell>(
+            target: Target,
             cellHeight: CGFloat,
             autoCellHeight: Bool = false,
             cellType: T.Type,
             reuseType: RegisterType = .anyClass,
-            _ cellForRowAtIndexPath: @escaping (_ tableView: UITableView, _ indexPath:IndexPath, _ cell: T) -> (),
-            didSelectRowAtIndexPath: ((_ tableView: UITableView, _ indexPath:IndexPath, _ cell: T) -> ())? = nil,
+            _ cellForRowAtIndexPath: @escaping (_ target: Target, _ tableView: UITableView, _ indexPath:IndexPath, _ cell: T) -> (),
             willDisplay:((_ tableView: UITableView, _ cell: T, _ indexPath: IndexPath) -> ())? = nil
         ) {
             self.autoCellHeight = autoCellHeight
             self.cellHeight = self.autoCellHeight == true ? UITableView.automaticDimension: cellHeight;
-            self.cellForRowAtIndexPath = { tableView, indexPath in
-                let cell = reuseType == .anyClass ?
-                tableView.tb.dequeueReusableCell(anyClass: cellType) :
-                tableView.tb.dequeueReusableCell(nibClass: cellType)
-                cellForRowAtIndexPath(tableView, indexPath, cell)
+            self.cellForRowAtIndexPath = { [weak target] tableView, indexPath in
+                let cell = reuseType == .anyClass ? tableView.tb.dequeueReusableCell(anyClass: cellType) : tableView.tb.dequeueReusableCell(nibClass: cellType)
+                guard let target else { return cell }
+                cellForRowAtIndexPath(target, tableView, indexPath, cell)
                 return cell
             }
-            self.didSelectRowAtIndexPath = { tableView, indexPath in
-                guard let cell = tableView.cellForRow(at: indexPath) as? T else { return }
-                didSelectRowAtIndexPath?(tableView, indexPath, cell)
+        }
+        
+        public func didSelected<Target: NSObject>(target: Target, _ callback: @escaping (_ target: Target, _ tableView: UITableView, _ indexPath: IndexPath) -> ()) -> Self {
+            var newValue = self
+            newValue.didSelectRowAtIndexPath = {[weak target] tableView, indexPath in
+                guard let target else { return }
+                callback(target, tableView, indexPath)
             }
-            self.willDisplay = { tableView, cell, indexPath in
-                guard let cell = cell as? T else { return }
-                willDisplay?(tableView, cell , indexPath)
+            return newValue
+        }
+        
+        public func willDisplay<Target: NSObject>(target: Target, _ callback: @escaping (_ target: Target, _ tableView: UITableView, _ cell: UITableViewCell, _ indexPath: IndexPath) -> ()) -> Self {
+            var newValue = self
+            newValue.willDisplay = { [weak target] tableView, cell, indexPath in
+                guard let target else { return }
+                callback(target, tableView, cell, indexPath)
             }
+            return newValue
         }
     }
     
