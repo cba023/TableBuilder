@@ -23,13 +23,13 @@ public struct  TableBuilder {
         public enum HeaderFooterReuseType<N: UIView, C: UITableViewHeaderFooterView> {
             case nibClass(
                 _ class: N.Type,
-                _ view: (_ tableView: UITableView, _ section: Int, _ reusableView: N) -> Void,
-                _ willDisplay: ((_ tableView: UITableView, _ reusableView: N, _ section: Int) -> Void)? = nil
+                _ view: (_ tableView: UITableView, _ section: Int, _ reusableView: N) -> (),
+                _ willDisplay: ((_ tableView: UITableView, _ reusableView: N, _ section: Int) -> ())? = nil
             )
             case anyClass(
                 _ class: C.Type,
-                _ view:(_ tableView: UITableView, _ section: Int, _ reusableView: C) -> Void,
-                _ willDisplay: ((_ tableView: UITableView, _ reusableView: C, _ section: Int) -> Void)? = nil
+                _ view:(_ tableView: UITableView, _ section: Int, _ reusableView: C) -> (),
+                _ willDisplay: ((_ tableView: UITableView, _ reusableView: C, _ section: Int) -> ())? = nil
             )
         }
         
@@ -41,9 +41,9 @@ public struct  TableBuilder {
         
         public var viewForHeader: ((_ tableView: UITableView, _ section: Int) -> UIView?)?
         
-        public var headerWillDisplay: ((_ tableView: UITableView, _ reusableView: UIView, _ section: Int) -> Void)?
+        public var headerWillDisplay: ((_ tableView: UITableView, _ reusableView: UIView, _ section: Int) -> ())?
         
-        public var footerWillDisplay: ((_ tableView: UITableView, _ reusableView: UIView, _ section: Int) -> Void)?
+        public var footerWillDisplay: ((_ tableView: UITableView, _ reusableView: UIView, _ section: Int) -> ())?
         
         public let autoFooterHeight: Bool
         
@@ -58,8 +58,8 @@ public struct  TableBuilder {
             footerHeight: CGFloat = CGFloat.leastNormalMagnitude,
             autoFooterHeight: Bool = false,
             footerReuse: HeaderFooterReuseType<F1, F2>? = nil,
-            @Section _ rows: () -> [Row])
-        {
+            @Section _ rows: () -> [Row]
+        ) {
             self.autoHeaderHeight = autoHeaderHeight
             self.autoFooterHeight = autoFooterHeight
             self.headerHeight = self.autoHeaderHeight ? UITableView.automaticDimension : headerHeight
@@ -146,22 +146,21 @@ extension TableBuilder {
         
         let autoCellHeight: Bool
         
-        let didSelectRowAtIndexPath: (_ tableView: UITableView, _ indexPath: IndexPath) -> Void
+        let didSelectRowAtIndexPath: (_ tableView: UITableView, _ indexPath: IndexPath) -> ()
         
         let cellForRowAtIndexPath: (_ tableView: UITableView, _ indexPath: IndexPath) -> UITableViewCell
         
-        let willDisplay: (_ tableView: UITableView, _ cell: UITableViewCell, _ indexPath: IndexPath) -> Void
+        let willDisplay: (_ tableView: UITableView, _ cell: UITableViewCell, _ indexPath: IndexPath) -> ()
         
         public init<T: UITableViewCell>(
             cellHeight: CGFloat,
             autoCellHeight: Bool = false,
             cellType: T.Type,
             reuseType: RegisterType = .anyClass,
-            _ cellForRowAtIndexPath:@escaping (_ tableView: UITableView, _ indexPath:IndexPath, _ cell: T) -> Void,
-            didSelectRowAtIndexPath: ((_ tableView: UITableView, _ indexPath:IndexPath, _ cell: T) -> Void)? = nil,
-            willDisplay:((_ tableView: UITableView, _ cell: T, _ indexPath: IndexPath) -> Void)? = nil
-        )
-        {
+            _ cellForRowAtIndexPath: @escaping (_ tableView: UITableView, _ indexPath:IndexPath, _ cell: T) -> (),
+            didSelectRowAtIndexPath: ((_ tableView: UITableView, _ indexPath:IndexPath, _ cell: T) -> ())? = nil,
+            willDisplay:((_ tableView: UITableView, _ cell: T, _ indexPath: IndexPath) -> ())? = nil
+        ) {
             self.autoCellHeight = autoCellHeight
             self.cellHeight = self.autoCellHeight == true ? UITableView.automaticDimension: cellHeight;
             self.cellForRowAtIndexPath = { tableView, indexPath in

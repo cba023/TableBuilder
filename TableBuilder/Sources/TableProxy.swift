@@ -43,10 +43,10 @@ open class TableProxy<T: NSObject>: NSObject, UITableViewDataSource, UITableView
     
     open var tableView: UITableView
 
-    public init (_ tableView: UITableView, with target: T, @TableBuilder.Section.Builder _ sections: @escaping (_ target: T) -> [TableBuilder.Section]?) {
+    public init (_ tableView: UITableView, with target: T, @TableBuilder.Section.Builder _ sections: @escaping (_ target: T) -> [TableBuilder.Section]) {
         self.tableView = tableView
         self.rebuildSections = { [weak target] in
-            guard let target = target else { return nil }
+            guard let target = target else { return [] }
             return sections(target)
         }
         super.init()

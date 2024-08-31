@@ -23,73 +23,60 @@ class ListVC: UIViewController {
     
     func buildTable() {
         tableProxy = TableProxy(tableView, with: self) { `self` in
-            for _ in 0..<3 {
+            for _ in 0..<1 {
                 TableBuilder.Section(
                     headerHeight: 50,
-                    headerReuse: .anyClass(UITableViewHeaderFooterView.self, { tableView, section, reusableView in
-                        reusableView.contentView.backgroundColor = .red
-                    }, { tableView, reusableView, indexPath in
-                        /// headerWillDisplay
-                        reusableView.layoutIfNeeded()
-                        reusableView.contentView.cutRectCorner([.topRight, .bottomLeft], cornerRadius: 25)
-                    })) {
-                        TableBuilder.Row(
-                            cellHeight: 50,
-                            cellType: TableViewCell1.self, reuseType: .nib)
-                        { tableView, indexPath, cell in
-                            
-                        } didSelectRowAtIndexPath: { tableView, indexPath, cell in
-                            print("CellType1的单独的点击事件")
+                    headerReuse: .anyClass(
+                        UITableViewHeaderFooterView.self, { tableView, section, reusableView in
+                            reusableView.contentView.backgroundColor = .red
+                        }, { tableView, reusableView, indexPath in
+                            /// headerWillDisplay
+                            reusableView.layoutIfNeeded()
+                            reusableView.contentView.cutRectCorner([.topRight, .bottomLeft], cornerRadius: 25)
                         }
+                    )
+                ) {
+                    TableBuilder.Row(
+                        cellHeight: 50,
+                        cellType: TableViewCell1.self, reuseType: .nib
+                    ) { tableView, indexPath, cell in
+                        
+                    } didSelectRowAtIndexPath: { tableView, indexPath, cell in
+                        print("CellType1的单独的点击事件")
+                    }
+                    TableBuilder.Row(
+                        cellHeight: 50,
+                        cellType: TableViewCell2.self, reuseType: .anyClass
+                    ) { tableView, indexPath, cell in
+                        cell.contentView.backgroundColor = .green
+                        cell.textLabel?.text = "\(indexPath.row)"
+                    } didSelectRowAtIndexPath: { tableView, indexPath, cell in
+                        print("=====Cell类型2的单独的点击事件")
+                    } willDisplay: { tableView, cell, indexPath in
+                        cell.contentView.cutRectCorner([.topLeft, .bottomRight], cornerRadius: 25)
+                    }
+                    let count = 10
+                    for _ in 0..<count {
                         TableBuilder.Row(
-                            cellHeight: 50,
-                            cellType: TableViewCell2.self, reuseType: .anyClass)
-                        { tableView, indexPath, cell in
-                            cell.contentView.backgroundColor = .green
+                            cellHeight: 30,
+                            autoCellHeight: false,
+                            cellType: UITableViewCell.self,
+                            reuseType: .anyClass
+                        ) { tableView, indexPath, cell in
+                            cell.contentView.backgroundColor = .blue
                             cell.textLabel?.text = "\(indexPath.row)"
-                        } didSelectRowAtIndexPath: { tableView, indexPath, cell in
-                            print("=====Cell类型2的单独的点击事件")
-                        } willDisplay: { tableView, cell, indexPath in
-                            cell.contentView.cutRectCorner([.topLeft, .bottomRight], cornerRadius: 25)
-                        }
-                        let count = 10
-                        for _ in 0..<count {
-                            TableBuilder.Row(
-                                cellHeight: 30,
-                                autoCellHeight: false,
-                                cellType: UITableViewCell.self,
-                                reuseType: .anyClass)
-                            { tableView, indexPath, cell in
-                                cell.contentView.backgroundColor = .blue
-                                cell.textLabel?.text = "\(indexPath.row)"
-                            }
-                        }
-                        if self.show {
-                            TableBuilder.Row(
-                                cellHeight: 50,
-                                cellType: UITableViewCell.self)
-                            { tableView, indexPath, cell in
-                                cell.contentView.backgroundColor = .purple
-                                cell.textLabel?.text = "\(indexPath.row)"
-                            }
-                            TableBuilder.Row(
-                                cellHeight: 50,
-                                cellType: UITableViewCell.self)
-                            { tableView, indexPath, cell in
-                                cell.contentView.backgroundColor = .purple
-                                cell.textLabel?.text = "\(indexPath.row)"
-                            }
-                        }
-                        else {
-                            TableBuilder.Row(
-                                cellHeight: 90,
-                                cellType: UITableViewCell.self)
-                            { tableView, indexPath, cell in
-                                cell.contentView.backgroundColor = .yellow
-                                cell.textLabel?.text = "\(indexPath.row)"
-                            }
                         }
                     }
+                    if self.show {
+                        TableBuilder.Row(
+                            cellHeight: 50,
+                            cellType: UITableViewCell.self
+                        ) { tableView, indexPath, cell in
+                            cell.contentView.backgroundColor = .purple
+                            cell.textLabel?.text = "\(indexPath.row)"
+                        }
+                    }
+                }
             }
         }
         tableProxy.didSelectRowAtIndexPath = { tableView, indexPath in
