@@ -37,8 +37,7 @@ extension TableBuilder {
             autoCellHeight: Bool = false,
             cellType: T.Type,
             reuseType: RegisterType = .anyClass,
-            _ cellForRowAtIndexPath: @escaping (_ target: Target, _ tableView: UITableView, _ indexPath:IndexPath, _ cell: T) -> (),
-            willDisplay:((_ tableView: UITableView, _ cell: T, _ indexPath: IndexPath) -> ())? = nil
+            _ cellForRowAtIndexPath: @escaping (_ target: Target, _ tableView: UITableView, _ indexPath:IndexPath, _ cell: T) -> ()
         ) {
             self.autoCellHeight = autoCellHeight
             self.cellHeight = self.autoCellHeight == true ? UITableView.automaticDimension: cellHeight;

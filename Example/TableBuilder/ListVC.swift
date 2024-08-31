@@ -12,8 +12,6 @@ class ListVC: UIViewController {
     
     @IBOutlet weak var tableView: UITableView!
     
-//    var tableProxy: TableProxy<ListVC>!
-    
     var tableBuilder: TableBuilder<ListVC>!
     
     override func viewDidLoad() {

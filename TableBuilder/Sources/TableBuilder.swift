@@ -69,7 +69,7 @@ public class TableBuilder<Target: AnyObject>: NSObject, UITableViewDataSource, U
         tableView.reloadRows(at: indexPaths, with: animation)
     }
 
-    open func appendRowsToLastSection(@TableBuilder.Row.Builder _ rows: () -> [TableBuilder.Row]) {
+    open func appendRowsToLastSection(@Row.Builder _ rows: () -> [Row]) {
         let numberOfSections = sections.count
         if numberOfSections == 0 { return }
         sections[numberOfSections - 1].rows.append(contentsOf: rows())
@@ -203,8 +203,6 @@ public class TableBuilder<Target: AnyObject>: NSObject, UITableViewDataSource, U
     open func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
         didEndScrollingAnimation?(scrollView)
     }
-    
-    
 }
 
 extension TableBuilder: ResultBuilderRule {

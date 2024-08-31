@@ -56,6 +56,5 @@ extension ResultBuilderRule {
     public static func buildArray(_ components: [[Base]]) -> [Base] {
         components.flatMap { $0 }
     }
-    
 }
 
