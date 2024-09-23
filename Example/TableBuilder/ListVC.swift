@@ -37,20 +37,13 @@ class ListVC: UIViewController {
                         }
                     )
                 ) {
-                    let r  = TableBuilder.Row(target: target, cellHeight: 50, cellType: TableViewCell1.self, reuseType: .nib) { target, tableView, indexPath, cell in
-                        
-                    }
-                    
-                    
-//                    .didSelected(target: target) { target, tableView, indexPath in
-//                        print(tableView)
-//                        target.show = false
-//                    }
-//                    .willDisplay(target: target) { target, tableView, cell, indexPath in
-////                        cell.name = "yoyo"
-//                    }
-                return [r]
-                
+                    TableBuilder.TRow.init(target: target, cellHeight: 50, cellType: TableViewCell1.self, reuseType: .nib) { target, tableView, IndexPath, cell in
+                        cell.name = "yoyoyo"
+                    }.done()
+                    TableBuilder.TRow.init(target: target, cellHeight: 50, cellType: TableViewCell2.self) { target, tableView, index, cell in
+                        cell.titleLab.text = "hahaadfsd"
+                        cell.contentView.backgroundColor = .green
+                    }.done()
                 }
             }
         }
@@ -65,7 +58,7 @@ class ListVC: UIViewController {
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        tableBuilder.appendRowsToLastSection {
+//        tableBuilder.appendRowsToLastSection {
 //            for _ in 0..<10 {
 //                TableBuilder.Row(
 //                    cellHeight: 30,
@@ -77,7 +70,7 @@ class ListVC: UIViewController {
 //                    cell.textLabel?.text = "\(indexPath.row)"
 //                }
 //            }
-        }
+//        }
     }
     
 }

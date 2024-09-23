@@ -10,7 +10,12 @@ import UIKit
 
 class TableViewCell1: UITableViewCell {
 
-    var name: String = "haha"
+    @IBOutlet weak var titleLabel: UILabel!
+    var name: String = "haha" {
+        didSet {
+            titleLabel.text = name
+        }
+    }
     
     override func awakeFromNib() {
         super.awakeFromNib()
