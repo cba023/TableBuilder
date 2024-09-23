@@ -87,6 +87,8 @@ extension TableBuilder {
         
         var target: Target
         
+        var cellType: T.Type
+        
         public init(
             target: Target,
             cellHeight: CGFloat,
@@ -96,6 +98,7 @@ extension TableBuilder {
             _ cellForRowAtIndexPath: @escaping (_ target: Target, _ tableView: UITableView, _ indexPath:IndexPath, _ cell: T) -> ()
         ) {
             self.target = target
+            self.cellType = cellType
             self.autoCellHeight = autoCellHeight
             self.cellHeight = self.autoCellHeight == true ? UITableView.automaticDimension: cellHeight;
             self.cellForRowAtIndexPath = { [weak target] tableView, indexPath in

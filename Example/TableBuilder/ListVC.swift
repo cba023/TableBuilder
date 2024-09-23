@@ -24,32 +24,17 @@ class ListVC: UIViewController {
     func buildTable() {
         tableBuilder = TableBuilder(tableView, with: self) { target in
             for _ in 0..<10 {
-                TableBuilder.Section(
-                    headerHeight: 50,
-                    headerReuse: .anyClass(
-                        UITableViewHeaderFooterView.self, { tableView, section, reusableView in
-                            reusableView.contentView.backgroundColor = .red
-                        },
-                        { tableView, reusableView, indexPath in
-                            /// headerWillDisplay
-                            reusableView.layoutIfNeeded()
-                            reusableView.contentView.cutRectCorner([.topRight, .bottomLeft], cornerRadius: 25)
-                        }
-                    )
-                ) {
-                    TableBuilder.TRow.init(target: target, cellHeight: 50, cellType: TableViewCell1.self, reuseType: .nib) { target, tableView, IndexPath, cell in
-                        cell.name = "yoyoyo"
+                TableBuilder.Section {
+                    TableBuilder.TRow(target: target, cellHeight: 50, cellType: TableViewCell1.self, reuseType: .nib) { target, tableView, indexPath, cell in
+                        cell.name = "yoyoyo\(indexPath.section)"
                     }.done()
-                    TableBuilder.TRow.init(target: target, cellHeight: 50, cellType: TableViewCell2.self) { target, tableView, index, cell in
-                        cell.titleLab.text = "hahaadfsd"
+                    TableBuilder.TRow(target: target, cellHeight: 50, cellType: TableViewCell2.self) { target, tableView, indexPath, cell in
+                        cell.titleLab.text = "hahaadfsd\(indexPath.section)"
                         cell.contentView.backgroundColor = .green
                     }.done()
                 }
             }
         }
-//        tableProxy.didSelectRowAtIndexPath = { tableView, indexPath in
-//            print("clicked: \(indexPath.section) - \(indexPath.row)")
-//        }
         tableBuilder.reloadData()
     }
     

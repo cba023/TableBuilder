@@ -104,14 +104,14 @@ extension TableBuilder.Section {
     
     public enum HeaderFooterReuseType<N: UIView, C: UITableViewHeaderFooterView> {
         case nibClass(
-            _ class: N.Type,
-            _ view: (_ tableView: UITableView, _ section: Int, _ reusableView: N) -> (),
-            _ willDisplay: ((_ tableView: UITableView, _ reusableView: N, _ section: Int) -> ())? = nil
+            class: N.Type,
+            view: (_ tableView: UITableView, _ section: Int, _ reusableView: N) -> (),
+            willDisplay: ((_ tableView: UITableView, _ reusableView: N, _ section: Int) -> ())? = nil
         )
         case anyClass(
-            _ class: C.Type,
-            _ view:(_ tableView: UITableView, _ section: Int, _ reusableView: C) -> (),
-            _ willDisplay: ((_ tableView: UITableView, _ reusableView: C, _ section: Int) -> ())? = nil
+            class: C.Type,
+            view:(_ tableView: UITableView, _ section: Int, _ reusableView: C) -> (),
+            willDisplay: ((_ tableView: UITableView, _ reusableView: C, _ section: Int) -> ())? = nil
         )
     }
 }
