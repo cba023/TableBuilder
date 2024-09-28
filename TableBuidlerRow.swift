@@ -109,7 +109,7 @@ extension TableBuilder {
             }
         }
         
-        public func didSelected(target: Target, _ callback: @escaping (_ target: Target, _ tableView: UITableView, _ indexPath: IndexPath, _ cell: T) -> ()) -> Self {
+        public func didSelected(_ callback: @escaping (_ target: Target, _ tableView: UITableView, _ indexPath: IndexPath, _ cell: T) -> ()) -> Self {
             var newValue = self
             newValue.didSelectRowAtIndexPath = {[weak target] tableView, indexPath in
                 guard let target else { return }
@@ -119,7 +119,7 @@ extension TableBuilder {
             return newValue
         }
         
-        public func willDisplay(target: Target, _ callback: @escaping (_ target: Target, _ tableView: UITableView, _ cell: T, _ indexPath: IndexPath) -> ()) -> Self {
+        public func willDisplay(_ callback: @escaping (_ target: Target, _ tableView: UITableView, _ cell: T, _ indexPath: IndexPath) -> ()) -> Self {
             var newValue = self
             newValue.willDisplay = { [weak target] tableView, cell, indexPath in
                 guard let target else { return }
@@ -128,11 +128,10 @@ extension TableBuilder {
             return newValue
         }
         
-        public func done() -> Row {
+        public var row: Row {
             return TableBuilder.Row(target: self.target, cellHeight: self.cellHeight, cellType: T.self) { target, tableView, indexPath in
                 return cellForRowAtIndexPath(tableView, indexPath)
             }
         }
     }
-
 }

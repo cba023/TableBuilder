@@ -27,11 +27,18 @@ class ListVC: UIViewController {
                 TableBuilder.Section {
                     TableBuilder.TRow(target: target, cellHeight: 50, cellType: TableViewCell1.self, reuseType: .nib) { target, tableView, indexPath, cell in
                         cell.name = "yoyoyo\(indexPath.section)"
-                    }.done()
+                    }
+                    .didSelected({ target, tableView, indexPath, cell in
+                        
+                    })
+                    .willDisplay({ target, tableView, cell, indexPath in
+                        
+                    })
+                    .row
                     TableBuilder.TRow(target: target, cellHeight: 50, cellType: TableViewCell2.self) { target, tableView, indexPath, cell in
                         cell.titleLab.text = "hahaadfsd\(indexPath.section)"
                         cell.contentView.backgroundColor = .green
-                    }.done()
+                    }
                 }
             }
         }
@@ -76,5 +83,16 @@ public extension  UIView {
         base.layer.mask = maskLayer
     }
     
+}
+
+extension TableBuilder.Section {
+    
+    typealias Base = TableBuilder.Row
+    
+    typealias Source = TableViewCell2
+    
+    static func buildExpression(_ expression: TableBuilder<Target>.TRow<Source>) -> [TableBuilder<Target>.Row] {
+        return [expression.row]
+    }
 }
 
